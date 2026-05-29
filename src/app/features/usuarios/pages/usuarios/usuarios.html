@@ -1,1 +1,106 @@
-<p>usuarios works!</p>
+<app-page-header
+    title="Usuarios"
+    subtitle="Administración de usuarios del sistema">
+</app-page-header>
+
+<app-page-toolbar>
+
+    <button
+    pButton
+    label="Nuevo Usuario"
+    (click)="showDialog()">
+    </button>
+    <button
+    pButton
+    label="Buscar Usuario"
+    icon="pi pi-search"
+    severity="secondary">
+    </button>
+    <button
+        pButton
+        label="Probar Toast"
+        icon="pi pi-bell"
+        (click)="probarToast()">
+    </button>
+    <button
+    pButton
+    label="Probar Confirm"
+    icon="pi pi-trash"
+    severity="danger"
+    (click)="probarConfirm()">
+</button>
+
+    <app-app-dialog
+    [(visible)]="dialogVisible"
+    title="Nuevo Usuario">
+
+    <app-usuario-form
+        (save)="guardarUsuario($event)"
+        (cancel)="dialogVisible = false">
+    </app-usuario-form>
+
+    <ng-template #footer>
+
+        <button
+            pButton
+            label="Cancelar"
+            severity="secondary"
+            (click)="dialogVisible = false">
+        </button>
+
+        <button
+            pButton
+            label="Guardar">
+        </button>
+
+    </ng-template>
+
+</app-app-dialog>
+
+</app-page-toolbar>
+
+
+<app-page-content>
+
+    <div class="usuarios-container">
+
+        Área de trabajo de Usuarios
+
+        lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate! Doloribus, quisquam. Voluptas, voluptate! Doloribus, quisquam. Voluptas, voluptate! Doloribus, quisquam. Voluptas, voluptate! Doloribus, quisquam.
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolore cumque cupiditate blanditiis ullam reiciendis odit provident laborum harum, eius porro sint aperiam consequatur odio ad sit! Nisi tempora laudantium illum.
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis, enim, id sapiente exercitationem laudantium esse alias excepturi similique tempore quod nam eum repellat amet ullam, facere nulla sit error suscipit.
+        lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolore cumque cupiditate blanditiis ullam reiciendis odit provident laborum harum, eius porro sint aperiam consequatur odio ad sit! Nisi tempora laudantium illum.
+        
+        <app-data-table
+    [columns]="columns"
+    [data]="usuarios"
+    [loading]="loading"
+    [rows]="3"
+    [globalFilterFields]="[
+        'id',
+        'nombre',
+        'correo',
+        'rol'
+    ]">
+
+    <ng-template #actions let-row>
+
+        <button
+            pButton
+            icon="pi pi-pencil"
+            severity="secondary">
+        </button>
+
+        <button
+            pButton
+            icon="pi pi-trash"
+            severity="danger">
+        </button>
+
+    </ng-template>
+
+</app-data-table>
+    
+    </div>
+
+</app-page-content>

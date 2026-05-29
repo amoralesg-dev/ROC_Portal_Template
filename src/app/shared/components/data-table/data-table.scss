@@ -1,0 +1,32 @@
+:host {
+    display: block;
+}
+
+.data-table-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: .5rem;
+
+    padding: 2rem;
+}
+
+.empty-state i {
+    font-size: 2rem;
+}
+
+.empty-state-title {
+    font-weight: 600;
+}
+
+.empty-state-subtitle {
+    color: var(--text-color-secondary);
+    font-size: .9rem;
+}

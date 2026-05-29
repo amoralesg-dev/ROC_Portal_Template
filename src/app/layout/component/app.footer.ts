@@ -1,11 +1,15 @@
 import { Component } from '@angular/core';
+import { APP_CONFIG } from '../../config';
+
 
 @Component({
     standalone: true,
     selector: 'app-footer',
     template: `<div class="layout-footer">
-        Created by RASSINI Team - 2026
-        
+        {{ appName }} - v{{ version }}
     </div>`
 })
-export class AppFooter {}
+export class AppFooter {
+    appName = APP_CONFIG.appName;
+    version = APP_CONFIG.version;
+}

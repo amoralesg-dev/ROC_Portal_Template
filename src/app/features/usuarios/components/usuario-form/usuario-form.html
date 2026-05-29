@@ -1,0 +1,54 @@
+<form
+    [formGroup]="form"
+    class="usuario-form">
+
+    <div class="field">
+
+        <label>Nombre</label>
+
+        <input
+            pInputText
+            formControlName="nombre">
+
+    </div>
+
+    <div class="field">
+
+        <label>Correo</label>
+
+        <input
+            pInputText
+            formControlName="correo">
+
+    </div>
+
+    <div class="field">
+
+        <label>Rol</label>
+
+        <input
+            pInputText
+            formControlName="rol">
+
+    </div>
+
+    <div class="actions">
+
+        <button
+            pButton
+            type="button"
+            label="Cancelar"
+            severity="secondary"
+            (click)="cancel.emit()">
+        </button>
+
+        <button
+            pButton
+            type="button"
+            label="Guardar"
+            (click)="guardar()">
+        </button>
+
+    </div>
+
+</form>

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { NavigationService } from '../../core/services';
+import { NavigationGroup } from '../../core/models';
 
 @Component({
     selector: 'app-menu',
@@ -19,55 +21,13 @@ import { AppMenuitem } from './app.menuitem';
     </ul> `,
 })
 export class AppMenu {
+
+    constructor(
+    private navigationService: NavigationService
+) {}
     model: MenuItem[] = [];
 
     ngOnInit() {
-        this.model = [
-    {
-        label: 'Principal',
-        items: [
-            {
-                label: 'Dashboard',
-                icon: 'pi pi-home',
-                routerLink: ['/']
-            }
-        ]
-    },
-    {
-        label: 'Operación',
-        items: [
-            {
-                label: 'Usuarios',
-                icon: 'pi pi-users',
-                routerLink: ['/usuarios']
-            },
-            {
-                label: 'Pagos',
-                icon: 'pi pi-credit-card',
-                routerLink: ['/pagos']
-            },
-            {
-                label: 'Reportes',
-                icon: 'pi pi-chart-bar',
-                routerLink: ['/reportes']
-            }
-        ]
-    },
-    {
-        label: 'Administración',
-        items: [
-            {
-                label: 'Monitoreo',
-                icon: 'pi pi-desktop',
-                routerLink: ['/monitoreo']
-            },
-            {
-                label: 'Configuración',
-                icon: 'pi pi-cog',
-                routerLink: ['/configuracion']
-            }
-        ]
-    }
-];
+        this.model = this.navigationService.getMenu();
     }
 }

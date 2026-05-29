@@ -5,6 +5,8 @@ import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
+import { MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 
 
 const RassiniPreset = definePreset(Aura, {
@@ -17,9 +19,9 @@ const RassiniPreset = definePreset(Aura, {
             200: '#fed7aa',
             300: '#fdba74',
             400: '#fb923c',
-            500: '#ff0000',
-            600: '#ff0000',
-            700: '#ff0000',
+            500: '#f59a2a',
+            600: '#e67e22',
+            700: '#d35400',
             800: '#9a3412',
             900: '#7c2d12',
             950: '#431407'
@@ -52,6 +54,7 @@ export const appConfig: ApplicationConfig = {
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
         provideHttpClient(withFetch()),
         provideZonelessChangeDetection(),
-        providePrimeNG({ theme: { preset: RassiniPreset, options: { darkModeSelector: '.app-dark' } } })
+        providePrimeNG({ theme: { preset: RassiniPreset, options: { darkModeSelector: '.app-dark' } } }),
+        MessageService,ConfirmationService
     ]
 };
