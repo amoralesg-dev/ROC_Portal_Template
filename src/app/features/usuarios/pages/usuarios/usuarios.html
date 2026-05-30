@@ -23,12 +23,18 @@
         (click)="probarToast()">
     </button>
     <button
-    pButton
-    label="Probar Confirm"
-    icon="pi pi-trash"
-    severity="danger"
-    (click)="probarConfirm()">
-</button>
+        pButton
+        label="Probar Confirm"
+        icon="pi pi-trash"
+        severity="danger"
+        (click)="probarConfirm()">
+    </button>
+    <button
+        pButton
+        label="Probar Loader"
+        icon="pi pi-spin pi-spinner"
+        (click)="probarLoader()">
+    </button>
 
     <app-app-dialog
     [(visible)]="dialogVisible"

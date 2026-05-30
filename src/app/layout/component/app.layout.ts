@@ -7,16 +7,18 @@ import { AppFooter } from './app.footer';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { AppToast } from '../../shared';
 import { AppConfirmDialog } from '../../shared';
+import { AppLoader } from '../../shared';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, AppToast,AppConfirmDialog],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, AppToast,AppConfirmDialog, AppLoader],
     template: `<div class="layout-wrapper" [ngClass]="containerClass()">
         <app-topbar></app-topbar>
         <app-sidebar></app-sidebar>
         <div class="layout-main-container">
             <div class="layout-main">
+                <app-app-loader></app-app-loader>
                 <app-app-toast></app-app-toast>
                 <app-app-confirm-dialog></app-app-confirm-dialog>
                 <router-outlet></router-outlet>

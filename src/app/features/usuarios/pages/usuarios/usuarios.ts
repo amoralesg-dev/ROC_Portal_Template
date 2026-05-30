@@ -8,6 +8,7 @@ import { AppDialog } from '../../../../shared';
 import { UsuarioForm } from '../../components/usuario-form/usuario-form';
 import { Toast } from '../../../../shared/services/toast';
 import { ConfirmationService } from 'primeng/api';
+import { Loader } from '../../../../shared/services/loader';
 
 @Component({
   selector: 'app-usuarios',
@@ -29,7 +30,8 @@ export class Usuarios implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
      private readonly toast: Toast,
-     private readonly confirmationService: ConfirmationService
+     private readonly confirmationService: ConfirmationService,
+      private readonly loader: Loader
 ) {}
 
 showDialog(): void {
@@ -58,7 +60,17 @@ ngOnInit(): void {
     }, 3000);
 
 }
+probarLoader(): void {
 
+    this.loader.show();
+
+    setTimeout(() => {
+
+        this.loader.hide();
+
+    }, 3000);
+
+}
 probarToast(): void {
 
     this.toast.success('Toast funcionando');
