@@ -31,7 +31,7 @@ export class Usuarios implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    //private readonly toast: Toast,
+    private readonly toast: Toast,
     private readonly confirmationService: ConfirmationService,
     private readonly loader: Loader
 ) {}
