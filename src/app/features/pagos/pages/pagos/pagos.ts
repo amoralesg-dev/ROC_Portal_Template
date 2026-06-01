@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PageHeaderComponent } from '../../../../shared';
+import { PageHeaderComponent } from 'rassini-ui';
 
 @Component({
   selector: 'app-pagos',

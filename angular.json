@@ -89,6 +89,32 @@
                     }
                 }
             }
+        },
+        "rassini-ui": {
+          "projectType": "library",
+          "root": "projects/rassini-ui",
+          "sourceRoot": "projects/rassini-ui/src",
+          "prefix": "lib",
+          "architect": {
+            "build": {
+              "builder": "@angular/build:ng-packagr",
+              "configurations": {
+                "production": {
+                  "tsConfig": "projects/rassini-ui/tsconfig.lib.prod.json"
+                },
+                "development": {
+                  "tsConfig": "projects/rassini-ui/tsconfig.lib.json"
+                }
+              },
+              "defaultConfiguration": "production"
+            },
+            "test": {
+              "builder": "@angular/build:unit-test",
+              "options": {
+                "tsConfig": "projects/rassini-ui/tsconfig.spec.json"
+              }
+            }
+          }
         }
     },
     "cli": {

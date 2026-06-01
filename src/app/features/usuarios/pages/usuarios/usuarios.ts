@@ -64,7 +64,10 @@ ngOnInit(): void {
 }
 probarLoader(): void {
 
+  console.log('Mostrando loader...ANTES',this.loader.loading()  );
+
     this.loader.show();
+    console.log('Mostrando loader...DESPUES',this.loader.loading()  );
 
     setTimeout(() => {
 

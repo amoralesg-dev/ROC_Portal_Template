@@ -5,9 +5,11 @@ import { AppTopbar } from './app.topbar';
 import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '@/app/layout/service/layout.service';
-import { AppToast } from '../../shared';
-import { AppConfirmDialog } from '../../shared';
-import { AppLoader } from '../../shared';
+import {
+  AppToast,
+  AppConfirmDialog,
+  AppLoader
+} from 'rassini-ui';
 
 @Component({
     selector: 'app-layout',
