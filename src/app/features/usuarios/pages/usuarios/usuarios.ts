@@ -1,14 +1,16 @@
 import {Component,OnInit,ChangeDetectorRef} from '@angular/core';
-import { PageHeaderComponent } from '../../../../shared';
-import { PageToolbarComponent } from '../../../../shared';
-import { PageContentComponent } from '../../../../shared';
-import { ButtonModule } from 'primeng/button';
-import { DataTable } from '../../../../shared';
-import { AppDialog } from '../../../../shared';
+import {
+  PageHeaderComponent,
+  PageToolbarComponent,
+  PageContentComponent,
+  DataTable,
+  AppDialog,
+  Toast,
+  Loader
+} from 'rassini-ui';
 import { UsuarioForm } from '../../components/usuario-form/usuario-form';
-import { Toast } from '../../../../shared/services/toast';
 import { ConfirmationService } from 'primeng/api';
-import { Loader } from '../../../../shared/services/loader';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-usuarios',
@@ -29,9 +31,9 @@ export class Usuarios implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-     private readonly toast: Toast,
-     private readonly confirmationService: ConfirmationService,
-      private readonly loader: Loader
+    private readonly toast: Toast,
+    private readonly confirmationService: ConfirmationService,
+    private readonly loader: Loader
 ) {}
 
 showDialog(): void {
@@ -134,6 +136,12 @@ usuarios = [
         id: 4,
         nombre: 'Ana Torres',
         correo: 'ana.torres@example.com',
+        rol: 'Usuario'
+    },
+    {
+        id: 5,
+        nombre: 'Ana Torres 5',
+        correo: 'ana.torres5@example.com',
         rol: 'Usuario'
     }
 ];
