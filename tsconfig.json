@@ -21,6 +21,9 @@
         "paths": {
             "@/*": [
                 "src/*"
+            ],
+            "rassini-ui": [
+              "./dist/rassini-ui"
             ]
         }
     },
@@ -29,5 +32,13 @@
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
         "strictTemplates": true
-    }
+    },
+    "references": [
+      {
+        "path": "./projects/rassini-ui/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/rassini-ui/tsconfig.spec.json"
+      }
+    ]
 }
