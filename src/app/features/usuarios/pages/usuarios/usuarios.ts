@@ -124,6 +124,12 @@ usuarios = [
         rol: 'Administrador'
     },
     {
+        id: 5,
+        nombre: 'Juan Pérez5',
+        correo: 'juan.perez5@example.com',
+        rol: 'Administrador5'
+    },
+    {
         id: 2,
         nombre: 'María López',
         correo: 'maria.lopez@example.com',
