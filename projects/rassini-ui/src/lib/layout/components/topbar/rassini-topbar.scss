@@ -1,0 +1,60 @@
+.rui-topbar {
+
+    height: 4rem;
+
+    background: rgba(255,255,255,0.90);
+
+    backdrop-filter: blur(18px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 1.5rem;
+
+    border-bottom: 1px solid rgba(0,0,0,.04);
+}
+
+.rui-topbar-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+}
+
+.rui-topbar-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1.5rem;
+
+    color: #6C757D;
+
+    font-size: 1.1rem;
+}
+
+.rui-logo {
+
+    height: 42px;
+
+    width: auto;
+}
+
+.rui-menu-button {
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 1.25rem;
+
+    color: #6C757D;
+}

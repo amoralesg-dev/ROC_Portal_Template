@@ -1,0 +1,8 @@
+:host {
+    display: contents;
+}
+
+:host(.rui-shell-sidebar-hidden) ~ .layout-main-container,
+.rui-shell-sidebar-hidden + .layout-main-container {
+    margin-left: 0 !important;
+}

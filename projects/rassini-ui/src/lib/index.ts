@@ -5,3 +5,4 @@ export * from './pipes';
 export * from './services';
 export * from './utils';
 export * from './theme';
+export * from './layout';
