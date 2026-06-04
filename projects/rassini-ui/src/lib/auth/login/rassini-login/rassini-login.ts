@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
@@ -22,6 +22,14 @@ export class RassiniLogin {
     username: string = '';
 
     password: string = '';
+
+    @Input()
+    errorMessage = '';
+
+    @Input()
+    loading = false;
+
+    
 
     @Output()
     loginEvent = new EventEmitter<{

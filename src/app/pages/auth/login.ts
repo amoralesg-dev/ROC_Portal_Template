@@ -3,12 +3,15 @@ import { Component, inject } from '@angular/core';
 import { Auth, RassiniLogin } from 'rassini-ui';
 import { Router } from '@angular/router';
 
+
 @Component({
     selector: 'app-login',
     standalone: true,
     imports: [RassiniLogin],
     template: `
         <rui-login
+            [loading]="loading"
+            [errorMessage]="errorMessage"
             (loginEvent)="onLogin($event)">
         </rui-login>
     `
@@ -19,27 +22,40 @@ export class Login {
 
     private auth = inject(Auth);
 
-    onLogin(event: {
-        username: string;
-        password: string;
+    errorMessage = '';
+
+    loading = false;
+
+onLogin(event: {
+    username: string;
+    password: string;
     }): void {
 
-        const authenticated = this.auth.login(
-            event.username,
-            event.password
-        );
+        this.loading = true;
 
-        if (authenticated) {
+        Promise.resolve().then(() => {
 
-            this.router.navigate(['/']);
-
-        } else {
-
-            console.error(
-                'USUARIO O CONTRASEÑA INCORRECTOS'
+            const authenticated = this.auth.login(
+                event.username,
+                event.password
             );
 
-        }
+            this.loading = false;
+
+            if (authenticated) {
+
+                this.errorMessage = '';
+
+                this.router.navigate(['/']);
+
+            } else {
+
+                this.errorMessage =
+                    'Usuario o contraseña incorrectos';
+
+            }
+
+        });
 
     }
 

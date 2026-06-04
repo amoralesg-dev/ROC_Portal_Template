@@ -32,9 +32,18 @@
 
             <button
                 pButton
-                label="Iniciar Sesión"
-                (click)="onLogin()">
+                (click)="onLogin()"
+                [disabled]="!username || !password">
+
+                {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+
             </button>
+            @if (errorMessage) {
+                <small class="rui-login-error">
+                    {{ errorMessage }}
+                </small>
+            }
+
 
         </div>
 
