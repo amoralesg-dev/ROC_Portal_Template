@@ -1,0 +1,43 @@
+<div class="rui-login">
+
+    <div class="rui-login-card">
+
+        <img
+            src="assets/images/rassini-logo.png"
+            alt="Rassini"
+            class="rui-login-logo">
+
+        <h2>Bienvenido a Rassini</h2>
+
+        <span>Inicia sesión para continuar</span>
+
+        <div class="rui-login-form">
+
+            <label>Usuario</label>
+
+            <input
+                pInputText
+                [(ngModel)]="username"
+                placeholder="Usuario">
+
+            <label>Contraseña</label>
+
+            <p-password
+                [(ngModel)]="password"
+                [toggleMask]="true"
+                [feedback]="false"
+                [fluid]="true"
+                placeholder="Contraseña">
+            </p-password>
+
+            <button
+                pButton
+                label="Iniciar Sesión"
+                (click)="onLogin()">
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

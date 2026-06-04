@@ -20,10 +20,13 @@ import { Monitoreo } from './app/features/monitoreo/pages/monitoreo/monitoreo';
 
 import { Configuracion } from './app/features/configuracion/pages/configuracion/configuracion';
 
+import { authGuard } from 'rassini-ui';
+
 export const appRoutes: Routes = [
     {
         path: '',
         component: AppLayout,
+        canActivate: [authGuard],
         children: [
             {
                 path: '',

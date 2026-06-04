@@ -7,10 +7,10 @@ import {
   AppToast,
   AppConfirmDialog,
   AppLoader,
-  RassiniTopbar,
-  RassiniSidebar,
+  Auth,
   RassiniShell
 } from 'rassini-ui';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-layout',
@@ -19,7 +19,8 @@ import {
     template: `<div class="layout-wrapper" [ngClass]="containerClass()">
         <rui-shell
             [menu]="menu"
-            (sidebarVisibleChange)="sidebarVisible = $event">
+            (sidebarVisibleChange)="sidebarVisible = $event"
+            (logout)="onLogout()">
         </rui-shell>
         <div class="layout-main-container"
              [class.rui-main-expanded]="!sidebarVisible">
@@ -36,11 +37,26 @@ import {
 })
 export class AppLayout {
     layoutService = inject(LayoutService);
+    private router = inject(Router);
+    private auth = inject(Auth);
+
     sidebarVisible = true;
 
     toggleSidebar(): void {
         this.sidebarVisible = !this.sidebarVisible;
     }
+
+    onLogout(): void {
+
+        this.auth.logout();
+
+        this.router.navigate([
+            '/auth/login'
+        ]);
+
+    }
+
+    
 
     constructor() {
         effect(() => {

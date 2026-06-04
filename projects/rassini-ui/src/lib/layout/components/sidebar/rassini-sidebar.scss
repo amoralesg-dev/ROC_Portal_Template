@@ -160,3 +160,26 @@
 .rui-sidebar.hidden {
     transform: translateX(-120%);
 }
+
+@media screen and (max-width: 991px) {
+
+    .rui-sidebar {
+
+        left: 0;
+
+        top: 0;
+
+        width: 18rem;
+
+        height: 100vh;
+
+        border-radius: 0;
+
+        z-index: 1100;
+    }
+
+    .rui-sidebar.hidden {
+
+        transform: translateX(-100%);
+    }
+}

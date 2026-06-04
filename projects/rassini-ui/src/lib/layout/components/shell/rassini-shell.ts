@@ -23,15 +23,28 @@ import { RassiniMenuItem } from '../../models';
     styleUrl: './rassini-shell.scss',
     template: `
         <rui-topbar
-            (menuToggle)="toggleSidebar()">
-        </rui-topbar>
+        (menuToggle)="toggleSidebar()"
+        (logout)="onLogout()">
+    </rui-topbar>
 
-        <rui-sidebar
-            [visible]="sidebarVisible"
-            [menu]="menu">
-        </rui-sidebar>
+    @if (sidebarVisible) {
 
-        <ng-content></ng-content>
+        <div
+            class="rui-sidebar-mask"
+            (click)="closeSidebar()">
+        </div>
+
+    }
+
+    <rui-sidebar
+        [visible]="sidebarVisible"
+        [menu]="menu"
+        (itemClick)="closeSidebarMobile()"
+        >
+    </rui-sidebar>
+
+    <ng-content></ng-content>
+
     `
 })
 export class RassiniShell {
@@ -42,7 +55,10 @@ export class RassiniShell {
     @Output()
     sidebarVisibleChange = new EventEmitter<boolean>();
 
-    sidebarVisible = true;
+    @Output()
+    logout = new EventEmitter<void>();
+
+    sidebarVisible = window.innerWidth > 991;
 
     get sidebarHidden(): boolean {
         return !this.sidebarVisible;
@@ -53,5 +69,35 @@ export class RassiniShell {
     this.sidebarVisible = !this.sidebarVisible;
 
     this.sidebarVisibleChange.emit(this.sidebarVisible);
-}
+
+    
+    }
+
+    closeSidebar(): void {
+
+        this.sidebarVisible = false;
+
+        this.sidebarVisibleChange.emit(false);
+
+    }
+    closeSidebarMobile(): void {
+
+         console.log('ITEM CLICK');
+
+        if (window.innerWidth <= 991) {
+
+            this.sidebarVisible = false;
+
+            this.sidebarVisibleChange.emit(false);
+
+        }
+
+    }
+    onLogout(): void {
+
+        console.log('SHELL LOGOUT');
+
+        this.logout.emit();
+
+    }
 }

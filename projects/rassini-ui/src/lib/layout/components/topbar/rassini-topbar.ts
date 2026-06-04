@@ -36,6 +36,11 @@ import {
 
                 <i class="pi pi-user"></i>
 
+                <i
+                    class="pi pi-sign-out"
+                    (click)="testLogout()">
+                </i>
+
             </div>
 
         </header>
@@ -46,5 +51,16 @@ export class RassiniTopbar {
 
     @Output()
     menuToggle = new EventEmitter<void>();
+
+    @Output()
+    logout = new EventEmitter<void>();
+
+    testLogout(): void {
+
+        console.log('TOPBAR LOGOUT');
+
+        this.logout.emit();
+
+    }
 
 }

@@ -6,3 +6,24 @@
 .rui-shell-sidebar-hidden + .layout-main-container {
     margin-left: 0 !important;
 }
+
+.rui-sidebar-mask {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+
+    .rui-sidebar-mask {
+
+        display: block;
+
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(0, 0, 0, 0.45);
+
+        z-index: 1090;
+    }
+
+}

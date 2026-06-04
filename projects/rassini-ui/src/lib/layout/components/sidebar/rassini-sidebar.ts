@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -35,7 +35,8 @@ import { RassiniMenuItem } from '../../models';
 
                                         <a
                                             [routerLink]="item.routerLink"
-                                            routerLinkActive="active">
+                                                routerLinkActive="active"
+                                                (click)="onItemClick()">
 
                                             <i
                                                 [class]="item.icon">
@@ -71,5 +72,12 @@ export class RassiniSidebar {
 
     @Input()
     visible = true;
+
+    @Output()
+    itemClick = new EventEmitter<void>();
+
+    onItemClick(): void {
+        this.itemClick.emit();
+    }
 
 }
