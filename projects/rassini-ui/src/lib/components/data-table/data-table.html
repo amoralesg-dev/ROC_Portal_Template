@@ -11,6 +11,9 @@
 <p-table
     #dt
     [value]="data"
+    [(selection)]="selection"
+    (selectionChange)="onSelectionChanged()"
+    dataKey="id"
     [loading]="loading"
     [paginator]="paginator"
     [rows]="rows"
@@ -20,6 +23,12 @@
 
     <ng-template pTemplate="header">
         <tr>
+
+            <th style="width: 1.5rem">
+
+                <p-tableHeaderCheckbox />
+
+            </th>
 
             @for (column of columns; track column.field) {
 
@@ -51,6 +60,14 @@
     <ng-template pTemplate="body" let-row>
         <tr>
 
+            <td>
+
+                <p-tableCheckbox
+                    [value]="row">
+                </p-tableCheckbox>
+
+            </td>
+
             @for (column of columns; track column.field) {
 
                 <td>
@@ -81,7 +98,7 @@
 
         <tr>
 
-            <td [attr.colspan]="columns.length">
+            <td [attr.colspan]="columns.length + 1">
 
                 <div class="empty-state">
 

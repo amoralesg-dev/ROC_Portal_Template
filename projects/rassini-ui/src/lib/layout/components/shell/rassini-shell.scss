@@ -1,10 +1,17 @@
 :host {
-    display: contents;
+    display: block;
 }
 
-:host(.rui-shell-sidebar-hidden) ~ .layout-main-container,
-.rui-shell-sidebar-hidden + .layout-main-container {
-    margin-left: 0 !important;
+.rui-shell-content {
+
+    margin-left: 20rem;
+
+    padding: 6rem 2rem 2rem 2rem;
+
+    min-height: 100vh;
+
+    transition: margin-left .2s ease;
+
 }
 
 .rui-sidebar-mask {
@@ -12,6 +19,12 @@
 }
 
 @media screen and (max-width: 991px) {
+
+    .rui-shell-content {
+
+        margin-left: 0;
+
+    }
 
     .rui-sidebar-mask {
 
@@ -25,5 +38,11 @@
 
         z-index: 1090;
     }
+
+}
+.rui-shell-content-expanded {
+
+    margin-left: 0 !important;
+
 
 }

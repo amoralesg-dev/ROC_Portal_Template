@@ -71,6 +71,11 @@
 
 <app-page-content>
 
+    <div style="background:red;color:white;padding:8px">
+        Seleccionados: {{ selectedUsers.length }}
+    </div>
+    <pre>{{ selectedUsers | json }}</pre>
+
     <div class="usuarios-container">
 
         Área de trabajo de Usuarios
@@ -78,6 +83,7 @@
     <app-data-table
     [columns]="columns"
     [data]="usuarios"
+    (rowsSelected)="onSelectionChange($event)"
     [loading]="loading"
     [rows]="3"
     [globalFilterFields]="[

@@ -39,11 +39,18 @@ import { RassiniMenuItem } from '../../models';
     <rui-sidebar
         [visible]="sidebarVisible"
         [menu]="menu"
-        (itemClick)="closeSidebarMobile()"
-        >
+        (itemClick)="closeSidebarMobile()">
     </rui-sidebar>
 
-    <ng-content></ng-content>
+    <div
+        class="rui-shell-content"
+        [class.rui-shell-content-expanded]="!sidebarVisible">
+
+        
+
+        <ng-content></ng-content>
+
+    </div>
 
     `
 })
@@ -82,7 +89,6 @@ export class RassiniShell {
     }
     closeSidebarMobile(): void {
 
-         console.log('ITEM CLICK');
 
         if (window.innerWidth <= 991) {
 
@@ -95,7 +101,6 @@ export class RassiniShell {
     }
     onLogout(): void {
 
-        console.log('SHELL LOGOUT');
 
         this.logout.emit();
 

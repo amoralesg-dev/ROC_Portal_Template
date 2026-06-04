@@ -57,7 +57,6 @@ export class RassiniTopbar {
 
     testLogout(): void {
 
-        console.log('TOPBAR LOGOUT');
 
         this.logout.emit();
 

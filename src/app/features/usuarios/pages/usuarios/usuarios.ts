@@ -14,6 +14,7 @@ import {
 import { UsuarioForm } from '../../components/usuario-form/usuario-form';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-usuarios',
@@ -23,7 +24,8 @@ import { ButtonModule } from 'primeng/button';
     ButtonModule,
     DataTable,
     AppDialog,
-    UsuarioForm],
+    UsuarioForm,
+    JsonPipe],
   templateUrl: './usuarios.html',
   styleUrl: './usuarios.scss',
 })
@@ -47,7 +49,6 @@ showDialog(): void {
 
   guardarUsuario(usuario: any): void {
 
-    console.log(usuario);
 
     this.dialogVisible = false;
 
@@ -67,10 +68,8 @@ ngOnInit(): void {
 }
 probarLoader(): void {
 
-  console.log('Mostrando loader...ANTES',this.loader.loading()  );
 
     this.loader.show();
-    console.log('Mostrando loader...DESPUES',this.loader.loading()  );
 
     setTimeout(() => {
 
@@ -107,6 +106,17 @@ probarConfirm(): void {
 
         }
     });
+
+}
+
+selectedUsers: any[] = [];
+
+
+onSelectionChange(rows: any[]): void {
+
+    this.selectedUsers = rows;
+
+    console.log('SELECCIONADOS', rows);
 
 }
 

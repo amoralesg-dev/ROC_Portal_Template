@@ -16,24 +16,34 @@ import { Router } from '@angular/router';
     selector: 'app-layout',
     standalone: true,
     imports: [CommonModule, RassiniShell, RouterModule, AppFooter, AppToast,AppConfirmDialog, AppLoader],
-    template: `<div class="layout-wrapper" [ngClass]="containerClass()">
+    template: `
+    <div class="layout-wrapper" [ngClass]="containerClass()">
+
         <rui-shell
             [menu]="menu"
             (sidebarVisibleChange)="sidebarVisible = $event"
             (logout)="onLogout()">
-        </rui-shell>
-        <div class="layout-main-container"
-             [class.rui-main-expanded]="!sidebarVisible">
+
             <div class="layout-main">
+
                 <app-app-loader></app-app-loader>
+
                 <app-app-toast></app-app-toast>
+
                 <app-app-confirm-dialog></app-app-confirm-dialog>
+
                 <router-outlet></router-outlet>
+
             </div>
+
             <app-footer></app-footer>
-        </div>
+
+        </rui-shell>
+
         <div class="layout-mask"></div>
-    </div> `
+
+    </div>
+`
 })
 export class AppLayout {
     layoutService = inject(LayoutService);
