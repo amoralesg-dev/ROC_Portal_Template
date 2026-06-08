@@ -4,4 +4,15 @@
     gap: 1rem;
 
     margin-bottom: 1.5rem;
+
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+
+    .page-toolbar {
+
+        gap: .75rem;
+    }
+
 }

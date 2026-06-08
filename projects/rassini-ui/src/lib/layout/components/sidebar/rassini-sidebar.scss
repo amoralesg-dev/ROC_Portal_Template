@@ -1,0 +1,185 @@
+.rui-sidebar {
+
+    position: fixed;
+
+    top: 5.8rem;
+
+    left: 1rem;
+
+    width: 18rem;
+
+    height: calc(100vh - 7rem);
+
+    overflow-y: auto;
+
+    z-index: 999;
+
+    user-select: none;
+
+    padding: 1.5rem 1rem;
+
+    border-radius: 1.25rem;
+
+    background: rgba(255, 255, 255, 0.88);
+
+    backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.04);
+
+    transition:
+        transform 0.2s ease,
+        left 0.2s ease;
+}
+
+.rui-menu {
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+}
+
+.rui-menu-group {
+
+    margin-bottom: 2rem;
+}
+
+.rui-menu-group-title {
+
+    margin-bottom: 1rem;
+
+    padding-left: 0.5rem;
+
+    font-size: .85rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .03rem;
+
+    color: #565A5C;
+}
+
+.rui-menu-group ul {
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+}
+
+.rui-menu-group li {
+
+    margin-bottom: .25rem;
+}
+
+.rui-menu-group a {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: .75rem;
+
+    padding: .85rem 1rem;
+
+    border-radius: .75rem;
+
+    text-decoration: none;
+
+    color: var(--text-color);
+
+    transition:
+        background-color .2s,
+        color .2s;
+
+    cursor: pointer;
+}
+
+.rui-menu-group a:hover {
+
+    background: rgba(245, 154, 42, 0.10);
+}
+
+.rui-menu-group a.active {
+
+    color: var(--primary-color);
+
+    font-weight: 700;
+}
+
+.rui-menu-group a.active i {
+
+    color: var(--primary-color);
+}
+
+.rui-menu-group i {
+
+    width: 1rem;
+
+    min-width: 1rem;
+
+    font-size: 1rem;
+
+    color: #6C757D;
+}
+
+.rui-menu-group span {
+
+    font-size: 1rem;
+}
+
+.rui-sidebar::-webkit-scrollbar {
+
+    width: 6px;
+}
+
+.rui-sidebar::-webkit-scrollbar-track {
+
+    background: transparent;
+}
+
+.rui-sidebar::-webkit-scrollbar-thumb {
+
+    background: rgba(0, 0, 0, 0.15);
+
+    border-radius: 10px;
+}
+
+.rui-sidebar::-webkit-scrollbar-thumb:hover {
+
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.rui-sidebar.hidden {
+    transform: translateX(-120%);
+}
+
+@media screen and (max-width: 991px) {
+
+    .rui-sidebar {
+
+        left: 0;
+
+        top: 0;
+
+        width: 18rem;
+
+        height: 100vh;
+
+        border-radius: 0;
+
+        z-index: 1100;
+    }
+
+    .rui-sidebar.hidden {
+
+        transform: translateX(-100%);
+    }
+}

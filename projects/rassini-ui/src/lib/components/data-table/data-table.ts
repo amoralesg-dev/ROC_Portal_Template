@@ -1,7 +1,9 @@
 import {
   Component,
   ContentChild,
+  EventEmitter,
   Input,
+  Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -59,5 +61,18 @@ export class DataTable {
 
   @ViewChild('dt')
   table!: Table;
+
+  @Output()
+  rowsSelected = new EventEmitter<any[]>();
+
+  selection: any[] = [];
+
+  onSelectionChanged(): void {
+
+      this.rowsSelected.emit(
+          this.selection
+      );
+
+  }
 
 }
