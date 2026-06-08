@@ -3,6 +3,9 @@ import {
     EventEmitter,
     Output
 } from '@angular/core';
+import {
+    RASSINI_LOGO
+} from '../../../assets/rassini-assets';
 
 @Component({
     selector: 'rui-topbar',
@@ -22,7 +25,7 @@ import {
                 </button>
 
                 <img
-                    src="assets/images/rassini-logo.png"
+                    [src]="logo"
                     alt="Rassini"
                     class="rui-logo">
 
@@ -48,6 +51,9 @@ import {
     styleUrl: './rassini-topbar.scss'
 })
 export class RassiniTopbar {
+
+
+    logo = RASSINI_LOGO;
 
     @Output()
     menuToggle = new EventEmitter<void>();

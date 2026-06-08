@@ -1,9 +1,13 @@
-import { Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+
+import { Auth } from '../../../services/auth';
+
 import {
     RASSINI_FAVICON,
     RASSINI_LOGO
@@ -35,43 +39,37 @@ export class RassiniLogin {
 
     logo = RASSINI_LOGO;
 
-    constructor() {
+    constructor(
+        private readonly auth: Auth,
+        private readonly router: Router
+    ) {
 
-        this.applyFavicon();
 
     }
-
-    @Output()
-    loginEvent = new EventEmitter<{
-        username: string;
-        password: string;
-    }>();
 
     onLogin(): void {
-        this.loginEvent.emit({
-            username: this.username,
-            password: this.password
-        });
+
+        const authenticated =
+            this.auth.login(
+                this.username,
+                this.password
+            );
+
+        if (authenticated) {
+
+            this.router.navigate([
+                '/dashboard'
+            ]);
+
+            return;
+
+        }
+
+        this.errorMessage =
+            'Usuario o contraseña inválidos';
+
     }
 
-    private applyFavicon(): void {
+    
 
-    let link =
-        document.querySelector(
-            "link[rel='icon']"
-        ) as HTMLLinkElement;
-
-    if (!link) {
-
-        link = document.createElement('link');
-
-        link.rel = 'icon';
-
-        document.head.appendChild(link);
-
-    }
-
-    link.href = RASSINI_FAVICON;
-
-}
 }

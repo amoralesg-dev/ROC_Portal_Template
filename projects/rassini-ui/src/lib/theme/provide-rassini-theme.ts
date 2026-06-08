@@ -12,10 +12,22 @@ import {
 } from './rassini-preset';
 
 import {
+    loadFavicon
+} from './load-favicon';
+
+import {
     RASSINI_GLOBAL_STYLES
 } from './rassini-global-styles';
 
+import {
+    loadPrimeIcons
+} from './load-primeicons';
+
 export function provideRassiniTheme(): EnvironmentProviders {
+
+    loadFavicon();
+
+    loadPrimeIcons();
 
     const styleId = 'rassini-global-theme';
 
