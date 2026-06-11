@@ -3,8 +3,6 @@ import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
-import { MessageService } from 'primeng/api';
-import { ConfirmationService } from 'primeng/api';
 
 import { RassiniPreset } from 'rassini-ui';
 

@@ -16,4 +16,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 })
 export class AppConfirmDialog {
 
+  constructor() {
+    console.log('APP CONFIRM CARGADO');
+}
+
 }

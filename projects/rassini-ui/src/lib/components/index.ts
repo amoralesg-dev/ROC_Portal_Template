@@ -1,3 +1,4 @@
+//index.ts component exports
 export * from './page-header/page-header.component';
 export * from './page-toolbar/page-toolbar.component';
 export * from './page-content/page-content.component';
