@@ -9,6 +9,9 @@ import { CommonModule } from '@angular/common';
 import { RassiniTopbar } from '../topbar/rassini-topbar';
 import { RassiniSidebar } from '../sidebar/rassini-sidebar';
 import { RassiniMenuItem } from '../../models';
+import { RassiniFooter } from '../footer/rassini-footer';
+
+console.log(RassiniFooter);
 
 @Component({
     selector: 'rui-shell',
@@ -17,8 +20,7 @@ import { RassiniMenuItem } from '../../models';
         CommonModule,
         RassiniTopbar,
         RassiniSidebar,
-        
-        
+        RassiniFooter,
     ],
     styleUrl: './rassini-shell.scss',
     template: `
@@ -49,6 +51,7 @@ import { RassiniMenuItem } from '../../models';
         
 
         <ng-content></ng-content>
+        <rui-footer></rui-footer>
 
     </div>
 

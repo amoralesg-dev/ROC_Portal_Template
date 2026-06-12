@@ -1,68 +1,79 @@
 import {
-    EnvironmentProviders,
-    makeEnvironmentProviders
+EnvironmentProviders,
+makeEnvironmentProviders
 } from '@angular/core';
 
 import {
-    providePrimeNG
+MessageService,
+ConfirmationService
+} from 'primeng/api';
+
+import {
+providePrimeNG
 } from 'primeng/config';
 
 import {
-    RassiniPreset
+RassiniPreset
 } from './rassini-preset';
 
 import {
-    loadFavicon
+loadFavicon
 } from './load-favicon';
 
 import {
-    RASSINI_GLOBAL_STYLES
+RASSINI_GLOBAL_STYLES
 } from './rassini-global-styles';
 
 import {
-    loadPrimeIcons
+loadPrimeIcons
 } from './load-primeicons';
 
 export function provideRassiniTheme(): EnvironmentProviders {
 
-    loadFavicon();
 
-    loadPrimeIcons();
+loadFavicon();
 
-    const styleId = 'rassini-global-theme';
+loadPrimeIcons();
 
-    if (!document.getElementById(styleId)) {
+const styleId = 'rassini-global-theme';
 
-        const style =
-            document.createElement('style');
+if (!document.getElementById(styleId)) {
 
-        style.id = styleId;
+    const style =
+        document.createElement('style');
 
-        style.innerHTML =
-            RASSINI_GLOBAL_STYLES;
+    style.id = styleId;
 
-        document.head.appendChild(style);
+    style.innerHTML =
+        RASSINI_GLOBAL_STYLES;
 
-    }
+    document.head.appendChild(style);
 
-    return makeEnvironmentProviders([
+}
 
-        providePrimeNG({
+return makeEnvironmentProviders([
 
-            theme: {
+    providePrimeNG({
 
-                preset: RassiniPreset,
+        theme: {
 
-                options: {
+            preset: RassiniPreset,
 
-                    darkModeSelector: '.app-dark'
+            options: {
 
-                }
+                darkModeSelector: '.app-dark'
 
             }
 
-        })
+        }
 
-    ]);
+    }),
+
+    MessageService,
+
+    ConfirmationService
+
+]);
+
 
 }

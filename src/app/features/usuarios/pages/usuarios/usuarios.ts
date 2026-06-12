@@ -39,7 +39,10 @@ export class Usuarios implements OnInit {
     private readonly toast: Toast,
     private readonly confirmationService: ConfirmationService,
     private readonly loader: Loader
-) {}
+) {
+
+    console.log('USUARIOS COMPONENT');
+}
 
 showDialog(): void {
 

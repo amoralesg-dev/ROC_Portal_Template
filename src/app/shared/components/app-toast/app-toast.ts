@@ -16,4 +16,8 @@ import { ToastModule } from 'primeng/toast';
 })
 export class AppToast {
 
+  constructor() {
+    console.log('APP TOAST CARGADO');
+}
+
 }
