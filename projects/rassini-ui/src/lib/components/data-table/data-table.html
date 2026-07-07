@@ -19,6 +19,9 @@
     [rows]="rows"
     [rowsPerPageOptions]="rowsPerPageOptions"
     [globalFilterFields]="globalFilterFields"
+    [lazy]="lazy"
+    [totalRecords]="totalRecords"
+    (onPage)="onPage($event)"
     [tableStyle]="{ 'min-width': '50rem' }">
 
     <ng-template pTemplate="header">

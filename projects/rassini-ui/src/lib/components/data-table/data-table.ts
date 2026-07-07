@@ -9,11 +9,8 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-
-import { TableModule } from 'primeng/table';
+import { TableModule, Table, TablePageEvent } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-
-import { Table } from 'primeng/table';
 
 export interface DataTableColumn {
   field: string;
@@ -56,6 +53,15 @@ export class DataTable {
   @Input()
   loading = false;
 
+  @Input()
+  totalRecords = 0;
+
+  @Input()
+  lazy = false;
+
+  @Output()
+  pageChange = new EventEmitter<TablePageEvent>();
+
   @ContentChild('actions')
   actionsTemplate?: TemplateRef<any>;
 
@@ -74,5 +80,11 @@ export class DataTable {
       );
 
   }
+
+  onPage(event: TablePageEvent): void {
+
+      this.pageChange.emit(event);
+
+}
 
 }

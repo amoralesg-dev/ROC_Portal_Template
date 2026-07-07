@@ -28,12 +28,18 @@ import {
 loadPrimeIcons
 } from './load-primeicons';
 
+import {
+    loadPrimeFlex
+} from './load-primeflex';
+
 export function provideRassiniTheme(): EnvironmentProviders {
 
 
 loadFavicon();
 
 loadPrimeIcons();
+
+loadPrimeFlex();
 
 const styleId = 'rassini-global-theme';
 
