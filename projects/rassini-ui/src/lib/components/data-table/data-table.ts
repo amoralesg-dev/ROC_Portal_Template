@@ -71,6 +71,17 @@ export class DataTable {
   @Output()
   rowsSelected = new EventEmitter<any[]>();
 
+  @Input()
+  remoteFilter = false;
+
+  @Output()
+  globalFilterChange =
+      new EventEmitter<string>();
+
+  @Input()
+  searchPlaceholder = 'Buscar...';
+
+
   selection: any[] = [];
 
   onSelectionChanged(): void {
@@ -83,8 +94,27 @@ export class DataTable {
 
   onPage(event: TablePageEvent): void {
 
-      this.pageChange.emit(event);
+        this.pageChange.emit(event);
 
-}
+  }
+  onGlobalFilter(event: Event): void {
+
+      const value =
+          (event.target as HTMLInputElement).value;
+
+      if (this.remoteFilter) {
+
+          this.globalFilterChange.emit(value);
+
+          return;
+      }
+
+      this.table.filterGlobal(
+          value,
+          'contains'
+      );
+
+  }
+
 
 }

@@ -1,4 +1,10 @@
-import { Component, Input } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter
+} from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -37,6 +43,38 @@ export class RassiniLogin {
     @Input()
     loading = false;
 
+    @Output()
+    loginEvent = new EventEmitter<{
+        username: string;
+        password: string;
+    }>();
+    @Input()
+    title = 'Bienvenido a Rassini';
+
+    @Input()
+    subtitle = 'Inicia sesión para continuar';
+
+    @Input()
+    applicationName = '';
+
+    @Input()
+    usernameLabel = 'Usuario';
+
+    @Input()
+    usernamePlaceholder = 'Usuario';
+
+    @Input()
+    passwordLabel = 'Contraseña';
+
+    @Input()
+    passwordPlaceholder = 'Contraseña';
+
+    @Input()
+    loginButtonText = 'Iniciar Sesión';
+
+    @Input()
+    loadingText = 'Iniciando sesión...';
+
     logo = RASSINI_LOGO;
 
     constructor(
@@ -44,10 +82,14 @@ export class RassiniLogin {
         private readonly router: Router
     ) {
 
-
     }
 
     onLogin(): void {
+
+        this.loginEvent.emit({
+            username: this.username,
+            password: this.password
+        });
 
         const authenticated =
             this.auth.login(
@@ -69,7 +111,5 @@ export class RassiniLogin {
             'Usuario o contraseña inválidos';
 
     }
-
-    
 
 }

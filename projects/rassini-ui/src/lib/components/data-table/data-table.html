@@ -3,8 +3,8 @@
     <input
         pInputText
         type="text"
-        placeholder="Buscar..."
-        (input)="table.filterGlobal($any($event.target).value, 'contains')">
+        [placeholder]="searchPlaceholder"
+        (input)="onGlobalFilter($event)">
 
 </div>
 
