@@ -7,27 +7,37 @@
             alt="Rassini"
             class="rui-login-logo">
 
-        <h2>Bienvenido a Rassini</h2>
+        <h2>{{ title }}</h2>
 
-        <span>Inicia sesión para continuar</span>
+        
+        @if (applicationName) {
+
+            <div class="rui-login-app-name">
+                {{ applicationName }}
+            </div>
+
+        }
+
+
+        <span>{{ subtitle }}</span>
 
         <div class="rui-login-form">
 
-            <label>Usuario</label>
+            <label>{{ usernameLabel }}</label>
 
             <input
                 pInputText
                 [(ngModel)]="username"
-                placeholder="Usuario">
+                placeholder="{{ usernamePlaceholder }}">
 
-            <label>Contraseña</label>
+            <label>{{ passwordLabel }}</label>
 
             <p-password
                 [(ngModel)]="password"
                 [toggleMask]="true"
                 [feedback]="false"
                 [fluid]="true"
-                placeholder="Contraseña">
+                placeholder="{{ passwordPlaceholder }}">
             </p-password>
 
             <button
@@ -35,7 +45,7 @@
                 (click)="onLogin()"
                 [disabled]="!username || !password">
 
-                {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+                {{ loading ? loadingText : loginButtonText }}
 
             </button>
             @if (errorMessage) {
