@@ -9,8 +9,13 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { TableModule, Table, TablePageEvent } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import {
+  TableModule,
+  Table,
+  TablePageEvent,
+  TableLazyLoadEvent
+} from 'primeng/table';
 
 export interface DataTableColumn {
   field: string;
@@ -62,6 +67,9 @@ export class DataTable {
   @Output()
   pageChange = new EventEmitter<TablePageEvent>();
 
+  @Output()
+  lazyLoadChange = new EventEmitter<TableLazyLoadEvent>();
+
   @ContentChild('actions')
   actionsTemplate?: TemplateRef<any>;
 
@@ -80,6 +88,13 @@ export class DataTable {
 
   @Input()
   searchPlaceholder = 'Buscar...';
+
+  @Input()
+  emptyTitle = 'No se encontraron registros';
+
+  @Input()
+  emptySubtitle =
+      'Ajusta los filtros o intenta una nueva búsqueda';
 
 
   selection: any[] = [];
@@ -113,6 +128,11 @@ export class DataTable {
           value,
           'contains'
       );
+
+  }
+  onLazyLoad(event: TableLazyLoadEvent): void {
+
+      this.lazyLoadChange.emit(event);
 
   }
 

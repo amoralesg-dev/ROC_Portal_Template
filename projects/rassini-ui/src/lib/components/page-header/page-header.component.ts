@@ -13,4 +13,7 @@ export class PageHeaderComponent {
 
     @Input()
     subtitle = '';
+    
+    @Input()
+    icon = '';
 }
