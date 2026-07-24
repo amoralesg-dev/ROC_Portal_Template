@@ -22,6 +22,7 @@
     [lazy]="lazy"
     [totalRecords]="totalRecords"
     (onPage)="onPage($event)"
+    (onLazyLoad)="onLazyLoad($event)"
     [tableStyle]="{ 'min-width': '50rem' }">
 
     <ng-template pTemplate="header">
@@ -108,11 +109,11 @@
                     <i class="pi pi-inbox"></i>
 
                     <div class="empty-state-title">
-                        No se encontraron registros
+                        {{ emptyTitle }}
                     </div>
 
                     <div class="empty-state-subtitle">
-                        Ajusta los filtros o intenta una nueva búsqueda
+                         {{ emptySubtitle }}
                     </div>
 
                 </div>
