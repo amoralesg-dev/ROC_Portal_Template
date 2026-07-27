@@ -9,12 +9,15 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
+import { TooltipModule } from 'primeng/tooltip';
 import {
   TableModule,
   Table,
   TablePageEvent,
-  TableLazyLoadEvent
+  TableLazyLoadEvent,
 } from 'primeng/table';
 
 export interface DataTableColumn {
@@ -22,15 +25,26 @@ export interface DataTableColumn {
   header: string;
   type?: 'text' | 'actions';
   sortable?: boolean;
+  editable?: boolean;
+  maxlength?: number;
+  placeholder?: string;
+  width?: string;
+  styleClass?: string;
+  truncateLength?: number;
+  tooltip?: boolean;
 }
+
 
 @Component({
   selector: 'app-data-table',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     TableModule,
-    InputTextModule
+    InputTextModule,
+    TruncatePipe,
+    TooltipModule
   ],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss'

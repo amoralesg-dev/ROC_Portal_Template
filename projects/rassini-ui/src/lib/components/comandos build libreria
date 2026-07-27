@@ -1,0 +1,16 @@
+cd C:\workspace\sakai-ng
+ng build rassini-ui
+
+cd C:\workspace\sakai-ng\dist\rassini-ui
+npm pack
+
+dir *.tgz
+copy rassini-ui-0.0.1.tgz C:\workspace\ROC_PortalCxP\front\
+
+cd C:\workspace\ROC_PortalCxP\front
+npm uninstall rassini-ui
+npm install .\rassini-ui-0.0.1.tgz
+
+type node_modules\rassini-ui\types\rassini-ui.d.ts | findstr "width styleClass"
+ng build
+ng serve

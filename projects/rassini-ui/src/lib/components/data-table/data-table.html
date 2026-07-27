@@ -23,7 +23,7 @@
     [totalRecords]="totalRecords"
     (onPage)="onPage($event)"
     (onLazyLoad)="onLazyLoad($event)"
-    [tableStyle]="{ 'min-width': '50rem' }">
+    [tableStyle]="{ 'width': '100%' }">
 
     <ng-template pTemplate="header">
         <tr>
@@ -38,7 +38,9 @@
 
                 @if (column.sortable) {
 
-                    <th [pSortableColumn]="column.field">
+                    <th    [pSortableColumn]="column.field"    
+                        [style.width]="column.width"
+                        [ngClass]="column.styleClass">
 
                         {{ column.header }}
 
@@ -50,8 +52,12 @@
 
                 } @else {
 
-                    <th>
+                    <th
+                        [style.width]="column.width"
+                        [ngClass]="column.styleClass">
+
                         {{ column.header }}
+
                     </th>
 
                 }
@@ -74,7 +80,9 @@
 
             @for (column of columns; track column.field) {
 
-                <td>
+               <td    
+                [style.width]="column.width"   
+                [ngClass]="column.styleClass">
 
                     @if (column.type === 'actions') {
 
@@ -87,7 +95,30 @@
 
                     } @else {
 
-                        {{ row[column.field] }}
+                        @if (column.editable) {
+
+                            <input    
+                                pInputText
+                                type="text"
+                                [style.width]="column.width"
+                                [(ngModel)]="row[column.field]">
+
+                        } @else {
+
+                        
+                            <span
+                                [pTooltip]="column.tooltip ? row[column.field] : null"
+                                tooltipPosition="top">
+
+                                {{
+                                    column.truncateLength
+                                        ? (row[column.field] | truncate:column.truncateLength)
+                                        : row[column.field]
+                                }}
+
+                            </span>
+
+                        }
 
                     }
 
