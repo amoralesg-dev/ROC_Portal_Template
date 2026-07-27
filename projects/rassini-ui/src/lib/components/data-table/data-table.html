@@ -1,10 +1,13 @@
 <div class="data-table-header">
 
-    <input
-        pInputText
-        type="text"
-        [placeholder]="searchPlaceholder"
-        (input)="onGlobalFilter($event)">
+    @if (showSearch) {
+        <input
+            pInputText
+            type="text"
+            [placeholder]="searchPlaceholder"
+            (input)="onGlobalFilter($event)">
+    }
+    
 
 </div>
 

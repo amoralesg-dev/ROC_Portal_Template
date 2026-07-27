@@ -78,6 +78,9 @@ export class DataTable {
   @Input()
   lazy = false;
 
+  @Input()
+  showSearch = true;
+
   @Output()
   pageChange = new EventEmitter<TablePageEvent>();
 
