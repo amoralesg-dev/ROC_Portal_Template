@@ -10,7 +10,7 @@ export class Toast {
     private readonly messageService: MessageService
   ) {}
 
-  success(detail: string, summary = 'Éxito'): void {
+  success(detail: string, summary?: string): void {
 
     this.messageService.add({
       severity: 'success',
@@ -20,7 +20,7 @@ export class Toast {
 
   }
 
-  error(detail: string, summary = 'Error'): void {
+  error(detail: string, summary?: string): void {
 
     this.messageService.add({
       severity: 'error',
@@ -30,7 +30,7 @@ export class Toast {
 
   }
 
-  warn(detail: string, summary = 'Advertencia'): void {
+  warn(detail: string, summary?: string): void {
 
     this.messageService.add({
       severity: 'warn',
@@ -40,7 +40,7 @@ export class Toast {
 
   }
 
-  info(detail: string, summary = 'Información'): void {
+  info(detail: string, summary?: string): void {
 
     this.messageService.add({
       severity: 'info',
