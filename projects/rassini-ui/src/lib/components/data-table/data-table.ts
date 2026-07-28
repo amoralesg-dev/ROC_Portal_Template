@@ -5,7 +5,9 @@ import {
   Input,
   Output,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -20,7 +22,7 @@ import {
   TableLazyLoadEvent,
 } from 'primeng/table';
 
-export interface DataTableColumn {
+export interface DataTableColumn{
   field: string;
   header: string;
   type?: 'text' | 'actions';
@@ -49,7 +51,7 @@ export interface DataTableColumn {
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss'
 })
-export class DataTable {
+export class DataTable implements OnChanges{
 
   @Input()
   columns: DataTableColumn[] = [];
@@ -95,6 +97,9 @@ export class DataTable {
 
   @Output()
   rowsSelected = new EventEmitter<any[]>();
+
+  @Input()
+  selectedRows: any[] = [];
 
   @Input()
   remoteFilter = false;
@@ -153,5 +158,10 @@ export class DataTable {
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedRows']) {
+        this.selection = [...(this.selectedRows || [])];
+    }
+}
 
 }
