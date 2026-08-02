@@ -9,3 +9,7 @@ export * from './utils';
 export * from './theme';
 export * from './layout';
 export * from './assets/rassini-assets';
+export * from './guards/auth-guard';
+export * from './guards/permission.guard';
+export * from './providers/auth.provider';
+export * from './interceptors/auth.interceptor';

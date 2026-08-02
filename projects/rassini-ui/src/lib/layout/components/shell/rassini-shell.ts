@@ -26,6 +26,7 @@ console.log(RassiniFooter);
     template: `
         <rui-topbar
         (menuToggle)="toggleSidebar()"
+        (profileClick)="onProfileClick($event)"
         (logout)="onLogout()">
     </rui-topbar>
 
@@ -68,6 +69,9 @@ export class RassiniShell {
     @Output()
     logout = new EventEmitter<void>();
 
+    @Output()
+    profileClick = new EventEmitter<Event>();
+
     sidebarVisible = window.innerWidth > 991;
 
     get sidebarHidden(): boolean {
@@ -107,5 +111,9 @@ export class RassiniShell {
 
         this.logout.emit();
 
+    }
+
+    onProfileClick(event: Event): void {
+        this.profileClick.emit(event);
     }
 }
