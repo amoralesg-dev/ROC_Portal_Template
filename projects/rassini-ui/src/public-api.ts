@@ -24,6 +24,10 @@ export * from './lib/components/app-dialog/app-dialog';
 export * from './lib/components/app-loader/app-loader';
 
 export * from './lib/components/data-table/data-table';
+export * from './lib/components/empty-state/empty-state';
+export * from './lib/components/loading-spinner/loading-spinner';
+export * from './lib/components/search-bar/search-bar';
+export * from './lib/components/change-password/change-password.component';
 
 export * from './lib/components/page-header/page-header.component';
 export * from './lib/components/page-toolbar/page-toolbar.component';

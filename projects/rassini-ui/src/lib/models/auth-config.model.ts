@@ -3,6 +3,7 @@ export interface AuthConfiguration {
     refreshUrl: string;
     meUrl: string;
     logoutUrl?: string;
+    changePasswordUrl?: string;
     accessTokenStorageKey?: string;
     refreshTokenStorageKey?: string;
 }

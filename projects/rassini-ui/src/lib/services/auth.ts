@@ -17,10 +17,7 @@ export class Auth {
     readonly menus = signal<any[]>([]);
 
     constructor(@Inject(AUTH_CONFIG) private readonly config: AuthConfiguration) {
-        // Load initial context if token is present
-        if (this.isAuthenticated()) {
-            this.loadSessionFromStorage();
-        }
+        // Initialization moved to APP_INITIALIZER
     }
 
     login(username: string, password: string): Observable<any> {
@@ -36,17 +33,10 @@ export class Auth {
                     localStorage.setItem(refreshKey, res.refreshToken);
                 }
 
-                // Populate context from login response if available
                 if (res.user) this.currentUser.set(res.user);
                 if (res.roles) this.roles.set(res.roles);
-                if (res.permissions) {
-                    this.permissions.set(res.permissions);
-                    localStorage.setItem('permissions', JSON.stringify(res.permissions));
-                }
-                if (res.menus) {
-                    this.menus.set(res.menus);
-                    localStorage.setItem('menus', JSON.stringify(res.menus));
-                }
+                if (res.permissions) this.permissions.set(res.permissions);
+                if (res.menus) this.menus.set(res.menus);
             })
         );
     }
@@ -57,8 +47,6 @@ export class Auth {
         
         localStorage.removeItem(tokenKey);
         localStorage.removeItem(refreshKey);
-        localStorage.removeItem('permissions');
-        localStorage.removeItem('menus');
 
         this.currentUser.set(null);
         this.roles.set([]);
@@ -96,14 +84,8 @@ export class Auth {
             tap(res => {
                 if (res.user) this.currentUser.set(res.user);
                 if (res.roles) this.roles.set(res.roles);
-                if (res.permissions) {
-                    this.permissions.set(res.permissions);
-                    localStorage.setItem('permissions', JSON.stringify(res.permissions));
-                }
-                if (res.menus) {
-                    this.menus.set(res.menus);
-                    localStorage.setItem('menus', JSON.stringify(res.menus));
-                }
+                if (res.permissions) this.permissions.set(res.permissions);
+                if (res.menus) this.menus.set(res.menus);
             })
         );
     }
@@ -125,14 +107,21 @@ export class Auth {
         return this.getCurrentUser();
     }
 
-    private loadSessionFromStorage(): void {
-        try {
-            const cachedPerms = localStorage.getItem('permissions');
-            const cachedMenus = localStorage.getItem('menus');
-            if (cachedPerms) this.permissions.set(JSON.parse(cachedPerms));
-            if (cachedMenus) this.menus.set(JSON.parse(cachedMenus));
-        } catch (e) {
-            console.error('Error loading session from storage', e);
-        }
+    restoreSession(): Observable<any> {
+        console.log('RESTORE SESSION CALLED');
+        console.log('CALLING /auth/me');
+        return this.getCurrentUser().pipe(
+            tap(response => {
+                console.log('ME RESPONSE', response);
+                console.log('currentUser =>', this.currentUser());
+                console.log('roles =>', this.roles());
+                console.log('permissions =>', this.permissions());
+                console.log('menus =>', this.menus());
+            }),
+            catchError(err => {
+                console.error('Error restoring session from /auth/me', err);
+                return throwError(() => err);
+            })
+        );
     }
 }

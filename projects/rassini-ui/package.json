@@ -1,5 +1,5 @@
 {
-  "name": "rassini-ui",
+  "name": "@rassini/rassini-ui",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
