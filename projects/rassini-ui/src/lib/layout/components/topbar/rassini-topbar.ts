@@ -37,7 +37,7 @@ import {
 
                 <i class="pi pi-inbox"></i>
 
-                <i class="pi pi-user"></i>
+                <i class="pi pi-user" (click)="profileClick.emit($event)"></i>
 
                 <i
                     class="pi pi-sign-out"
@@ -57,6 +57,9 @@ export class RassiniTopbar {
 
     @Output()
     menuToggle = new EventEmitter<void>();
+
+    @Output()
+    profileClick = new EventEmitter<Event>();
 
     @Output()
     logout = new EventEmitter<void>();

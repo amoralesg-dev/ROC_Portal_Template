@@ -12,6 +12,11 @@ export * from './lib/services/dialog';
 export * from './lib/services/loader';
 
 export * from './lib/guards/auth-guard';
+export * from './lib/guards/permission.guard';
+
+export * from './lib/providers/auth.provider';
+export * from './lib/interceptors/auth.interceptor';
+export * from './lib/models/auth-config.model';
 
 export * from './lib/components/app-toast/app-toast';
 export * from './lib/components/app-confirm-dialog/app-confirm-dialog';
@@ -19,6 +24,10 @@ export * from './lib/components/app-dialog/app-dialog';
 export * from './lib/components/app-loader/app-loader';
 
 export * from './lib/components/data-table/data-table';
+export * from './lib/components/empty-state/empty-state';
+export * from './lib/components/loading-spinner/loading-spinner';
+export * from './lib/components/search-bar/search-bar';
+export * from './lib/components/change-password/change-password.component';
 
 export * from './lib/components/page-header/page-header.component';
 export * from './lib/components/page-toolbar/page-toolbar.component';

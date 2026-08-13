@@ -91,24 +91,17 @@ export class RassiniLogin {
             password: this.password
         });
 
-        const authenticated =
-            this.auth.login(
-                this.username,
-                this.password
-            );
-
-        if (authenticated) {
-
-            this.router.navigate([
-                '/dashboard'
-            ]);
-
-            return;
-
-        }
-
-        this.errorMessage =
-            'Usuario o contraseña inválidos';
+        this.loading = true;
+        this.auth.login(this.username, this.password).subscribe({
+            next: (res) => {
+                this.loading = false;
+                this.router.navigate(['/']);
+            },
+            error: (err) => {
+                this.loading = false;
+                this.errorMessage = 'Usuario o contraseña incorrectos';
+            }
+        });
 
     }
 
