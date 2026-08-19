@@ -45,8 +45,9 @@ export class Auth {
         const tokenKey = this.config.accessTokenStorageKey || 'accessToken';
         const refreshKey = this.config.refreshTokenStorageKey || 'refreshToken';
         
-        localStorage.removeItem(tokenKey);
-        localStorage.removeItem(refreshKey);
+        // Limpieza total solicitada
+        localStorage.clear();
+        sessionStorage.clear();
 
         this.currentUser.set(null);
         this.roles.set([]);
