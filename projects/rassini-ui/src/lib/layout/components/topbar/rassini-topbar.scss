@@ -20,8 +20,6 @@
 
     align-items: center;
 
-    justify-content: space-between;
-
     padding: 0 1.5rem;
 
     border-bottom: 1px solid rgba(0,0,0,.04);
@@ -43,6 +41,8 @@
     align-items: center;
 
     gap: 1.5rem;
+
+    margin-left: auto !important;
 
     color: #6C757D;
 

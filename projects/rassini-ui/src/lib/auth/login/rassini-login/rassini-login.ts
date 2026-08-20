@@ -94,8 +94,12 @@ export class RassiniLogin {
         this.loading = true;
         this.auth.login(this.username, this.password).subscribe({
             next: (res) => {
+                console.log('Login success', res);
+                console.log('forcePasswordChange:', res.user?.forcePasswordChange);
+                const route = '/';
+                console.log('Navigating to:', route);
                 this.loading = false;
-                this.router.navigate(['/']);
+                this.router.navigate([route]);
             },
             error: (err) => {
                 this.loading = false;

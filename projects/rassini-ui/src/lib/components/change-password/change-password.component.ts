@@ -9,13 +9,14 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { Auth } from '../../services/auth';
 import { AUTH_CONFIG } from '../../providers/auth.provider';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, DialogModule, InputTextModule, PasswordModule, ButtonModule],
   template: `
-    <p-dialog header="Cambiar contraseña" [(visible)]="visible" [modal]="true" [style]="{width: '400px'}" (onHide)="onHide()">
+    <p-dialog header="Cambiar contraseña" [(visible)]="visible" [modal]="true" [style]="{width: '400px'}" appendTo="body" (onHide)="onHide()">
       
       <div *ngIf="backendError()" class="p-mb-3 text-red-500 font-bold mb-3">
         {{ backendError() }}
@@ -73,6 +74,7 @@ export class ChangePasswordComponent {
   private auth = inject(Auth);
   private messageService = inject(MessageService);
   private config = inject(AUTH_CONFIG);
+  private router = inject(Router);
 
   constructor() {
     this.form = this.fb.group({
@@ -138,7 +140,7 @@ export class ChangePasswordComponent {
         
         // Auto logout
         this.auth.logout();
-        window.location.href = '/auth/login'; // Redirect to login
+        this.router.navigate(['/auth/login']); // Redirect to login using router
       },
       error: (err) => {
         this.loading.set(false);
