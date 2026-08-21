@@ -20,8 +20,6 @@
 
     align-items: center;
 
-    justify-content: space-between;
-
     padding: 0 1.5rem;
 
     border-bottom: 1px solid rgba(0,0,0,.04);
@@ -44,9 +42,31 @@
 
     gap: 1.5rem;
 
+    margin-left: auto !important;
+
     color: #6C757D;
 
     font-size: 1.1rem;
+}
+
+.rui-profile-button {
+    transition: color 0.2s;
+    
+    &:hover {
+        color: var(--primary-color, #2196F3);
+    }
+}
+
+.rui-profile-username {
+    max-width: 150px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+    .rui-profile-username {
+        display: none;
+    }
 }
 
 .rui-logo {

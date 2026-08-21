@@ -31,11 +31,11 @@
     <ng-template pTemplate="header">
         <tr>
 
-            <th style="width: 1.5rem">
-
-                <p-tableHeaderCheckbox />
-
-            </th>
+            @if (enableSelection) {
+                <th style="width: 1.5rem">
+                    <p-tableHeaderCheckbox />
+                </th>
+            }
 
             @for (column of columns; track column.field) {
 
@@ -73,13 +73,11 @@
     <ng-template pTemplate="body" let-row>
         <tr>
 
-            <td>
-
-                <p-tableCheckbox
-                    [value]="row">
-                </p-tableCheckbox>
-
-            </td>
+            @if (enableSelection) {
+                <td>
+                    <p-tableCheckbox [value]="row"></p-tableCheckbox>
+                </td>
+            }
 
             @for (column of columns; track column.field) {
 
@@ -136,7 +134,7 @@
 
         <tr>
 
-            <td [attr.colspan]="columns.length + 1">
+            <td [attr.colspan]="columns.length + (enableSelection ? 1 : 0)">
 
                 <div class="empty-state">
 
