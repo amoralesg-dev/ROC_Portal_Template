@@ -2,7 +2,8 @@ import {
     Component,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    ChangeDetectorRef
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
@@ -13,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
 import { Auth } from '../../../services/auth';
+import { finalize } from 'rxjs/operators';
 
 import {
     RASSINI_FAVICON,
@@ -79,7 +81,8 @@ export class RassiniLogin {
 
     constructor(
         private readonly auth: Auth,
-        private readonly router: Router
+        private readonly router: Router,
+        private readonly cdr: ChangeDetectorRef
     ) {
 
     }
@@ -92,18 +95,32 @@ export class RassiniLogin {
         });
 
         this.loading = true;
-        this.auth.login(this.username, this.password).subscribe({
-            next: (res) => {
-                console.log('Login success', res);
-                console.log('forcePasswordChange:', res.user?.forcePasswordChange);
-                const route = '/';
-                console.log('Navigating to:', route);
+        this.auth.login(this.username, this.password).pipe(
+            finalize(() => {
+                console.log('LOGIN FINALIZE');
                 this.loading = false;
+                this.cdr.detectChanges();
+            })
+        ).subscribe({
+            next: (res) => {
+                console.log('LOGIN SUCCESS');
+                const route = '/';
                 this.router.navigate([route]);
             },
             error: (err) => {
-                this.loading = false;
-                this.errorMessage = 'Usuario o contraseña incorrectos';
+                console.log('LOGIN ERROR', err);
+                if (err.status === 401) {
+                    this.errorMessage = 'Usuario o contraseña incorrectos.';
+                } else if (err.status === 403) {
+                    this.errorMessage = 'Tu usuario se encuentra deshabilitado. Contacta a un administrador.';
+                } else if (err.status === 500) {
+                    this.errorMessage = 'Ocurrió un error interno del sistema. Intenta nuevamente.';
+                } else if (err.status === 0) {
+                    this.errorMessage = 'No fue posible conectar con el servicio. Intenta nuevamente.';
+                } else {
+                    this.errorMessage = 'Usuario o contraseña incorrectos.';
+                }
+                this.cdr.detectChanges();
             }
         });
 

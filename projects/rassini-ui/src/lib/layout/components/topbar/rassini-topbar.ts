@@ -47,7 +47,11 @@ import { ChangePasswordComponent } from '../../../components/change-password/cha
 
                 <i class="pi pi-inbox cursor-pointer"></i>
 
-                <i class="pi pi-user cursor-pointer" (click)="onProfileIconClick($event)"></i>
+                <div class="rui-profile-button cursor-pointer flex align-items-center gap-2" (click)="onProfileIconClick($event)" title="{{ auth.currentUser()?.username }}">
+                    <i class="pi pi-user"></i>
+                    <span class="rui-profile-username text-overflow-ellipsis white-space-nowrap overflow-hidden">{{ auth.currentUser()?.username }}</span>
+                </div>
+
                 <i
                     class="pi pi-sign-out cursor-pointer"
                     (click)="testLogout()">

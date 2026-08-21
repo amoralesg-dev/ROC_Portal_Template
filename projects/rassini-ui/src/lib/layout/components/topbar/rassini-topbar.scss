@@ -49,6 +49,26 @@
     font-size: 1.1rem;
 }
 
+.rui-profile-button {
+    transition: color 0.2s;
+    
+    &:hover {
+        color: var(--primary-color, #2196F3);
+    }
+}
+
+.rui-profile-username {
+    max-width: 150px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+    .rui-profile-username {
+        display: none;
+    }
+}
+
 .rui-logo {
 
     height: 42px;

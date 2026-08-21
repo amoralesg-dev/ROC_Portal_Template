@@ -60,6 +60,9 @@ export class DataTable implements OnChanges{
   data: any[] = [];
 
   @Input()
+  enableSelection = true;
+
+  @Input()
   paginator = true;
 
   @Input()
