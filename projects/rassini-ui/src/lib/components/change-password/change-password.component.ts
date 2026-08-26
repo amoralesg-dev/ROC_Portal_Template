@@ -126,7 +126,7 @@ export class ChangePasswordComponent {
     const payload = this.form.value;
 
     const urlTemplate = this.config.changePasswordUrl || `/api/users/{id}/change-password`;
-    const finalUrl = urlTemplate.replace('{id}', user.id);
+    const finalUrl = urlTemplate.replace('{id}', String(user.id));
 
     console.log('AUTH CONFIG', this.config);
     console.log('CHANGE PASSWORD URL', this.config.changePasswordUrl);

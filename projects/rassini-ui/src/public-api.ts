@@ -17,6 +17,8 @@ export * from './lib/guards/permission.guard';
 export * from './lib/providers/auth.provider';
 export * from './lib/interceptors/auth.interceptor';
 export * from './lib/models/auth-config.model';
+export * from './lib/models/auth.model';
+
 
 export * from './lib/components/app-toast/app-toast';
 export * from './lib/components/app-confirm-dialog/app-confirm-dialog';
