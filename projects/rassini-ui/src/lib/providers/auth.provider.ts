@@ -3,7 +3,16 @@ import { AuthConfiguration } from '../models/auth-config.model';
 import { Auth } from '../services/auth';
 import { catchError, of, lastValueFrom } from 'rxjs';
 
-export const AUTH_CONFIG = new InjectionToken<AuthConfiguration>('AUTH_CONFIG');
+export const AUTH_CONFIG = new InjectionToken<AuthConfiguration>('AUTH_CONFIG', {
+    providedIn: 'root',
+    factory: () => ({
+        loginUrl: '',
+        refreshUrl: '',
+        meUrl: '',
+        accessTokenStorageKey: 'accessToken',
+        refreshTokenStorageKey: 'refreshToken'
+    })
+});
 
 export function provideRassiniAuth(config: AuthConfiguration): Provider[] {
     return [

@@ -61,3 +61,11 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Autenticación Centralizada (Opcional)
+
+A partir de la versión 0.0.6, la librería ofrece un sistema centralizado de autenticación. Este mecanismo es estrictamente **opt-in (opcional)**.
+
+- **provideRassiniAuth() es opcional:** No es necesario llamarlo en el pp.config.ts de aplicaciones existentes.
+- **AUTH_CONFIG tiene configuración por defecto:** El token de inyección cuenta con un actory que provee valores nulos si no se configura explícitamente, evitando errores de inyección (NG0201).
+- **Compatibilidad hacia atrás (Backward Compatibility):** Los consumidores existentes de RassiniLogin que utilizan sus propios mecanismos de autenticación no requieren ningún cambio para actualizar a las versiones recientes de assini-ui.
