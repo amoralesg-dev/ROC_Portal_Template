@@ -62,5 +62,4 @@ export interface AuthContext {
     menus: AuthMenu[];
     businessUnits: AuthBusinessUnit[];
     hasAllBusinessUnits: boolean;
-    defaultBusinessUnit: AuthBusinessUnit | null;
 }

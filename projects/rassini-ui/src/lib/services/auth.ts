@@ -18,7 +18,6 @@ export class Auth {
     readonly menus               = signal<AuthMenu[]>([]);
     readonly businessUnits       = signal<AuthBusinessUnit[]>([]);
     readonly hasAllBusinessUnits = signal<boolean>(false);
-    readonly defaultBusinessUnit = signal<AuthBusinessUnit | null>(null);
 
     constructor(@Inject(AUTH_CONFIG) private readonly config: AuthConfiguration) {
         // Initialization moved to APP_INITIALIZER
@@ -50,7 +49,6 @@ export class Auth {
         this.menus.set([]);
         this.businessUnits.set([]);
         this.hasAllBusinessUnits.set(false);
-        this.defaultBusinessUnit.set(null);
 
         if (this.config.logoutUrl) {
             return this.http.post(this.config.logoutUrl, {}).pipe(
@@ -115,7 +113,6 @@ export class Auth {
                 console.log('menus =>',               this.menus());
                 console.log('businessUnits =>',       this.businessUnits());
                 console.log('hasAllBusinessUnits =>', this.hasAllBusinessUnits());
-                console.log('defaultBusinessUnit =>', this.defaultBusinessUnit());
             }),
             catchError(err => {
                 console.error('Error restoring session from /auth/me', err);
@@ -135,7 +132,6 @@ export class Auth {
 
         this.businessUnits.set(res.businessUnits ?? []);
         this.hasAllBusinessUnits.set(res.hasAllBusinessUnits ?? false);
-        this.defaultBusinessUnit.set(res.defaultBusinessUnit ?? null);
     }
 }
 
@@ -151,5 +147,4 @@ interface AuthApiResponse {
     menus?:                AuthMenu[];
     businessUnits?:        AuthBusinessUnit[];
     hasAllBusinessUnits?:  boolean;
-    defaultBusinessUnit?:  AuthBusinessUnit | null;
 }
