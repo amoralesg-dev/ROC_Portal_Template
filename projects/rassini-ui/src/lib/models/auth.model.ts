@@ -46,6 +46,8 @@ export interface AuthUser {
     email: string;
     enabled: boolean;
     forcePasswordChange: boolean;
+    mfaEnabled?: boolean;
+    mfaRequired?: boolean;
 }
 
 /**

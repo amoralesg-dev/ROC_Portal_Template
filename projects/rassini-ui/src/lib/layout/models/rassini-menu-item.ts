@@ -2,7 +2,7 @@ export interface RassiniMenuItem {
 
     label: string;
 
-    icon?: string;
+    icon?: string | null;
 
     routerLink?: string | string[];
 

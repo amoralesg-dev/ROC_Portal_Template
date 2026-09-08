@@ -79,12 +79,63 @@ export class RassiniLogin {
 
     logo = RASSINI_LOGO;
 
+    mfaPending = false;
+    mfaSetupRequired = false;
+    qrCodeUri = '';
+    manualEntryKey = '';
+    
+    tempToken = '';
+    mfaCode = '';
+
+    expiresIn: number = 0;
+    countdown: number = 0;
+    private timerInterval: any;
+    
+    Math = Math;
+
     constructor(
         private readonly auth: Auth,
         private readonly router: Router,
         private readonly cdr: ChangeDetectorRef
     ) {
 
+    }
+
+    ngOnDestroy(): void {
+        this.clearTimer();
+    }
+
+    private clearTimer(): void {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+    }
+
+    private startCountdown(): void {
+        this.clearTimer();
+        this.timerInterval = setInterval(() => {
+            if (this.countdown > 0) {
+                this.countdown--;
+                this.cdr.detectChanges();
+            } else {
+                this.clearTimer();
+                this.cdr.detectChanges();
+            }
+        }, 1000);
+    }
+
+    resetMfaState(msg: string): void {
+        this.clearTimer();
+        this.mfaPending = false;
+        this.mfaSetupRequired = false;
+        this.qrCodeUri = '';
+        this.manualEntryKey = '';
+        this.tempToken = '';
+        this.mfaCode = '';
+        this.password = '';
+        this.errorMessage = msg;
+        this.cdr.detectChanges();
     }
 
     onLogin(): void {
@@ -95,6 +146,7 @@ export class RassiniLogin {
         });
 
         this.loading = true;
+        this.errorMessage = '';
         this.auth.login(this.username, this.password).pipe(
             finalize(() => {
                 console.log('LOGIN FINALIZE');
@@ -102,10 +154,22 @@ export class RassiniLogin {
                 this.cdr.detectChanges();
             })
         ).subscribe({
-            next: (res) => {
+            next: (res: any) => {
                 console.log('LOGIN SUCCESS');
-                const route = '/';
-                this.router.navigate([route]);
+                if (res && res.tempToken) {
+                    this.mfaPending = true;
+                    this.mfaSetupRequired = res.mfaSetupRequired || false;
+                    this.qrCodeUri = res.qrCodeUri || '';
+                    this.manualEntryKey = res.manualEntryKey || '';
+                    this.tempToken = res.tempToken;
+                    this.expiresIn = res.expiresIn || (this.mfaSetupRequired ? 900 : 300);
+                    this.countdown = this.expiresIn;
+                    this.errorMessage = '';
+                    this.startCountdown();
+                } else {
+                    const route = '/';
+                    this.router.navigate([route]);
+                }
             },
             error: (err) => {
                 console.log('LOGIN ERROR', err);
@@ -124,6 +188,47 @@ export class RassiniLogin {
             }
         });
 
+    }
+
+    onVerifyMfa(): void {
+        if (this.countdown <= 0) {
+            this.resetMfaState('La sesión de configuración MFA expiró. Inicia sesión nuevamente.');
+            return;
+        }
+
+        this.loading = true;
+        this.errorMessage = '';
+        this.auth.verifyMfa(this.tempToken, this.mfaCode).pipe(
+            finalize(() => {
+                this.loading = false;
+                this.cdr.detectChanges();
+            })
+        ).subscribe({
+            next: () => {
+                this.clearTimer();
+                const route = '/';
+                this.router.navigate([route]);
+            },
+            error: (err) => {
+                if (err.status === 401 && err.error?.code) {
+                    this.resetMfaState(err.error.message || 'La sesión de verificación expiró. Inicia sesión nuevamente.');
+                } else if (err.status === 401) {
+                    this.resetMfaState('La sesión de verificación expiró. Inicia sesión nuevamente.');
+                } else if (err.status === 400 || err.status === 403) {
+                    this.errorMessage = err.error?.message || 'Código incorrecto o token expirado.';
+                    if (this.errorMessage.toLowerCase().includes('límite') || this.errorMessage.toLowerCase().includes('utilizado')) {
+                        this.resetMfaState(this.errorMessage);
+                    }
+                } else if (err.status === 429) {
+                     this.resetMfaState(err.error?.message || 'Demasiados intentos fallidos.');
+                } else if (err.status === 500) {
+                     this.resetMfaState('Ocurrió un error interno del servidor. Inicia sesión nuevamente.');
+                } else {
+                    this.errorMessage = 'Ocurrió un error al verificar el código.';
+                }
+                this.cdr.detectChanges();
+            }
+        });
     }
 
 }

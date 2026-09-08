@@ -1,0 +1,111 @@
+<p-dialog 
+    header="Seguridad de la Cuenta" 
+    [(visible)]="visible" 
+    [modal]="true" 
+    [style]="{width: '450px'}" 
+    (onHide)="reset()">
+    
+    <div *ngIf="successMessage" class="p-3 mb-3 bg-green-100 text-green-700 rounded border border-green-200">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="p-3 mb-3 bg-red-100 text-red-700 rounded border border-red-200">
+        {{ errorMessage }}
+    </div>
+
+    <!-- FLUJO: MFA ACTIVADO -->
+    <div *ngIf="isMfaEnabled" class="flex flex-col gap-4">
+        <p class="text-sm font-semibold text-gray-800" *ngIf="!isMfaRequired">MFA habilitado por el usuario</p>
+        <p class="text-sm text-gray-600 mt-1" *ngIf="!isMfaRequired">
+            Has activado la autenticación multifactor para proteger tu cuenta.
+        </p>
+        
+        <div *ngIf="isMfaRequired" class="flex flex-col gap-2">
+            <p class="text-sm font-semibold text-gray-800">
+                <i class="pi pi-lock text-purple-600 mr-1"></i> MFA requerido por política de seguridad
+            </p>
+            <p class="text-sm text-gray-600">
+                La autenticación multifactor es obligatoria para esta cuenta y no puede ser desactivada por el usuario.
+            </p>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mt-1 text-sm text-blue-800">
+                Si cambiaste de dispositivo, perdiste acceso a Microsoft Authenticator o necesitas reconfigurar MFA, contacta a un administrador con permisos de gestión MFA para recibir asistencia.
+            </div>
+        </div>
+        
+        <div *ngIf="!isMfaRequired">
+            <hr class="border-gray-200 my-2">
+            <p class="text-sm font-semibold mb-2">Desactivar Autenticador</p>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold">Contraseña actual</label>
+                <p-password [(ngModel)]="password" [toggleMask]="true" [feedback]="false" [fluid]="true"></p-password>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-2">
+                <label class="text-sm font-semibold">Código del Autenticador (6 dígitos)</label>
+                <input pInputText [(ngModel)]="disableCode" placeholder="Ej. 123456" />
+            </div>
+
+            <div class="flex justify-end mt-4">
+                <button pButton label="Cancelar" class="p-button-text mr-2" (click)="hide()"></button>
+                <button pButton label="Desactivar" class="p-button-danger" 
+                        [loading]="loading"
+                        [disabled]="!password || !disableCode || disableCode.length < 6"
+                        (click)="disableMfa()"></button>
+            </div>
+        </div>
+
+        <div *ngIf="isMfaRequired" class="flex justify-end mt-4">
+            <button pButton label="Cerrar" class="p-button-text" (click)="hide()"></button>
+        </div>
+    </div>
+
+    <!-- FLUJO: MFA DESACTIVADO (Permite configurar) -->
+    <div *ngIf="!isMfaEnabled" class="flex flex-col gap-4">
+        <p class="text-sm text-gray-600">
+            Aumenta la seguridad de tu cuenta activando la Autenticación Multifactor (MFA).
+        </p>
+
+        <div *ngIf="setupData" class="flex flex-col items-center gap-4 mt-2">
+            <div class="border p-2 rounded bg-white">
+                <div class="relative inline-block" style="width: 200px; height: 200px;">
+                    <img [src]="setupData.qrCodeUri" alt="Código QR" width="200" height="200" class="block">
+                    <!-- Overlay "R" logo centrado -->
+                    <div class="absolute flex items-center justify-center bg-white" 
+                         style="width: 44px; height: 44px; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 6px; box-shadow: 0 0 4px rgba(0,0,0,0.1);">
+                        <span class="text-3xl font-bold" style="color: #004b87; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">R</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center w-full">
+                <p class="text-sm text-gray-500 mb-1">O ingresa esta clave manualmente:</p>
+                <code class="block p-2 bg-gray-100 rounded text-gray-800 break-all select-all font-mono text-xs">
+                    {{ setupData.manualEntryKey }}
+                </code>
+            </div>
+
+            <div class="flex flex-col gap-2 w-full mt-4">
+                <label class="text-sm font-semibold">Ingresa el código generado para verificar</label>
+                <input pInputText [(ngModel)]="activationCode" placeholder="Ej. 123456" class="w-full text-center text-lg tracking-widest" />
+            </div>
+
+            <div class="flex justify-end w-full mt-2">
+                <button pButton label="Cancelar" class="p-button-text mr-2" (click)="hide()"></button>
+                <button pButton label="Activar" class="p-button-primary" 
+                        [loading]="loading"
+                        [disabled]="!activationCode || activationCode.length < 6"
+                        (click)="activateMfa()"></button>
+            </div>
+        </div>
+
+        <div *ngIf="!setupData && !loading" class="flex justify-center mt-4">
+            <button pButton label="Configurar Autenticador" icon="pi pi-qrcode" (click)="startSetup()"></button>
+        </div>
+        
+        <div *ngIf="loading && !setupData" class="flex justify-center mt-4 text-gray-500">
+            <i class="pi pi-spin pi-spinner mr-2"></i> Generando código QR...
+        </div>
+    </div>
+
+</p-dialog>

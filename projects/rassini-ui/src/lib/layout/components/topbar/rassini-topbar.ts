@@ -15,11 +15,12 @@ import { DialogModule } from 'primeng/dialog';
 import { MenuItem } from 'primeng/api';
 import { Auth } from '../../../services/auth';
 import { ChangePasswordComponent } from '../../../components/change-password/change-password.component';
+import { MfaSettingsComponent } from '../../../components/mfa-settings/mfa-settings.component';
 
 @Component({
     selector: 'rui-topbar',
     standalone: true,
-    imports: [CommonModule, MenuModule, DialogModule, ChangePasswordComponent],
+    imports: [CommonModule, MenuModule, DialogModule, ChangePasswordComponent, MfaSettingsComponent],
     template: `
         <header class="rui-topbar">
 
@@ -88,6 +89,7 @@ import { ChangePasswordComponent } from '../../../components/change-password/cha
         </p-dialog>
 
         <app-change-password #changePasswordDialog></app-change-password>
+        <rui-mfa-settings #mfaSettingsDialog></rui-mfa-settings>
     `,
     styleUrl: './rassini-topbar.scss'
 })
@@ -108,6 +110,7 @@ export class RassiniTopbar implements OnInit {
 
     @ViewChild('profileMenu') profileMenu: any;
     @ViewChild('changePasswordDialog') changePasswordDialog!: ChangePasswordComponent;
+    @ViewChild('mfaSettingsDialog') mfaSettingsDialog!: MfaSettingsComponent;
 
     profileVisible = false;
     rolesVisible = false;
@@ -118,6 +121,11 @@ export class RassiniTopbar implements OnInit {
             label: 'Mi Perfil',
             icon: 'pi pi-user',
             command: () => this.profileVisible = true
+        },
+        {
+            label: 'Seguridad (Autenticador 2FA)',
+            icon: 'pi pi-shield',
+            command: () => this.mfaSettingsDialog.show()
         },
         {
             label: 'Cambiar Contraseña',

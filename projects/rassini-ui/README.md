@@ -69,3 +69,42 @@ A partir de la versión 0.0.6, la librería ofrece un sistema centralizado de aute
 - **provideRassiniAuth() es opcional:** No es necesario llamarlo en el pp.config.ts de aplicaciones existentes.
 - **AUTH_CONFIG tiene configuración por defecto:** El token de inyección cuenta con un actory que provee valores nulos si no se configura explícitamente, evitando errores de inyección (NG0201).
 - **Compatibilidad hacia atrás (Backward Compatibility):** Los consumidores existentes de RassiniLogin que utilizan sus propios mecanismos de autenticación no requieren ningún cambio para actualizar a las versiones recientes de assini-ui.
+  
+==================================================  
+COMPATIBILIDAD OBLIGATORIA DE RASSINI-UI Y MFA  
+==================================================  
+rassini-ui es una libreria compartida y debe continuar funcionando para Employee Portal y para todas las aplicaciones que actualmente la consumen.  
+  
+Queda como criterio de aceptacion obligatorio:  
+  
+1. Compatibilidad hacia atras (Backward Compatibility)  
+- Ninguna aplicacion consumidora actual debe requerir modificaciones para continuar autenticandose.  
+- El flujo login() tradicional debe seguir funcionando exactamente igual cuando el backend responda HTTP 200.  
+  
+2. MFA como capacidad opt-in  
+- MFA se activa unicamente cuando el backend responde HTTP 202 con MfaPendingResponse.  
+- Si el backend responde LoginResponse tradicional, el comportamiento debe ser identico al actual.  
+  
+3. Sin Breaking Changes  
+- No eliminar metodos publicos existentes.  
+- No modificar firmas publicas consumidas por aplicaciones actuales.  
+- Todo cambio debe ser aditivo.  
+  
+4. Validacion cruzada obligatoria  
+Debe existir evidencia de:  
+- Employee Portal funcionando con MFA.  
+- portal-minimal (o consumidor equivalente) funcionando sin MFA.  
+- Compilacion y ejecucion correctas en ambos casos.  
+  
+5. Persistencia  
+- tempToken unicamente en memoria.  
+- No localStorage.  
+- No sessionStorage.  
+- No restoreSession.  
+- No refresh token hasta completar MFA.  
+  
+6. Evidencia final  
+- Login normal sigue funcionando.  
+- Login MFA (202 -> verify -> 200) funciona.  
+- MFA Enable funciona.  
+- MFA Disable funciona.  

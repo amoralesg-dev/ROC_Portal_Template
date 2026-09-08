@@ -28,6 +28,11 @@ export class Auth {
     login(username: string, password: string): Observable<unknown> {
         return this.http.post<AuthApiResponse>(this.config.loginUrl, { username, password }).pipe(
             tap(res => {
+                // Backward compatibility & MFA Opt-In:
+                // Si el backend responde con tempToken (HTTP 202), no persistas nada.
+                if (res && res.tempToken) {
+                    return; 
+                }
                 const tokenKey   = this.config.accessTokenStorageKey  || 'accessToken';
                 const refreshKey = this.config.refreshTokenStorageKey || 'refreshToken';
 
@@ -37,6 +42,34 @@ export class Auth {
                 this._applyContext(res);
             })
         );
+    }
+
+    verifyMfa(tempToken: string, code: string): Observable<unknown> {
+        if (!this.config.mfaVerifyUrl) return throwError(() => new Error('mfaVerifyUrl not configured'));
+        return this.http.post<AuthApiResponse>(this.config.mfaVerifyUrl, { tempToken, code }).pipe(
+            tap(res => {
+                const tokenKey   = this.config.accessTokenStorageKey  || 'accessToken';
+                const refreshKey = this.config.refreshTokenStorageKey || 'refreshToken';
+                if (res.accessToken)  localStorage.setItem(tokenKey,   res.accessToken);
+                if (res.refreshToken) localStorage.setItem(refreshKey, res.refreshToken);
+                this._applyContext(res);
+            })
+        );
+    }
+
+    setupMfa(): Observable<any> {
+        if (!this.config.mfaSetupUrl) return throwError(() => new Error('mfaSetupUrl not configured'));
+        return this.http.get(this.config.mfaSetupUrl);
+    }
+
+    activateMfa(code: string): Observable<any> {
+        if (!this.config.mfaActivateUrl) return throwError(() => new Error('mfaActivateUrl not configured'));
+        return this.http.post(this.config.mfaActivateUrl, { code });
+    }
+
+    disableMfa(password: string, code: string): Observable<any> {
+        if (!this.config.mfaDisableUrl) return throwError(() => new Error('mfaDisableUrl not configured'));
+        return this.http.post(this.config.mfaDisableUrl, { password, code });
     }
 
     logout(): Observable<unknown> | void {
@@ -141,6 +174,10 @@ export class Auth {
 interface AuthApiResponse {
     accessToken?:          string;
     refreshToken?:         string;
+    tempToken?:            string;
+    mfaSetupRequired?:     boolean;
+    qrCodeUri?:            string;
+    manualEntryKey?:       string;
     user?:                 AuthUser;
     roles?:                string[];
     permissions?:          string[];
