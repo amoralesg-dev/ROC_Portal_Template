@@ -374,6 +374,8 @@ export class AuthenticationService {
   }
 
   async logout(redirect: boolean = true): Promise<void> {
+    const logoutUrl = redirect ? this.buildLogoutUrl() : '';
+
     const user = this.currentUser();
     const appCode = this.config?.applicationCode || 'default_app';
 
@@ -404,7 +406,6 @@ export class AuthenticationService {
     this.activeBusinessUnit.set(null);
 
     if (redirect && typeof window !== 'undefined' && window.location) {
-      const logoutUrl = this.buildLogoutUrl();
       if (logoutUrl) {
         window.location.href = logoutUrl;
       } else {
