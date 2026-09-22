@@ -23,7 +23,10 @@
                 "src/*"
             ],
             "rassini-ui": [
-              "./dist/rassini-ui"
+              "./projects/rassini-ui/src/public-api.ts"
+            ],
+            "@rassini/rassini-ui": [
+              "./projects/rassini-ui/src/public-api.ts"
             ]
         }
     },

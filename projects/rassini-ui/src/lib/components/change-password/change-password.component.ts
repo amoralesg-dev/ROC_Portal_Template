@@ -72,7 +72,7 @@ export class ChangePasswordComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private auth = inject(Auth);
-  private messageService = inject(MessageService);
+  private messageService = inject(MessageService, { optional: true });
   private config = inject(AUTH_CONFIG);
   private router = inject(Router);
 
@@ -135,7 +135,7 @@ export class ChangePasswordComponent {
     this.http.post(finalUrl, payload).subscribe({
       next: () => {
         this.loading.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada correctamente' });
+        this.messageService?.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada correctamente' });
         this.visible = false;
         
         // Auto logout

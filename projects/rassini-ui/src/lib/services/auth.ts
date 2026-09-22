@@ -26,7 +26,7 @@ export class Auth {
     // ── Autenticación ────────────────────────────────────────────────────────
 
     login(username: string, password: string): Observable<unknown> {
-        return this.http.post<AuthApiResponse>(this.config.loginUrl, { username, password }).pipe(
+        return this.http.post<AuthApiResponse>(this.config.loginUrl, { username, password }, { withCredentials: true }).pipe(
             tap(res => {
                 // Backward compatibility & MFA Opt-In:
                 // Si el backend responde con tempToken (HTTP 202), no persistas nada.
@@ -84,7 +84,7 @@ export class Auth {
         this.hasAllBusinessUnits.set(false);
 
         if (this.config.logoutUrl) {
-            return this.http.post(this.config.logoutUrl, {}).pipe(
+            return this.http.post(this.config.logoutUrl, {}, { withCredentials: true }).pipe(
                 catchError(err => {
                     console.error('Logout error', err);
                     return throwError(() => err);

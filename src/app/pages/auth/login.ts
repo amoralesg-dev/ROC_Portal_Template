@@ -26,37 +26,22 @@ export class Login {
 
     loading = false;
 
-onLogin(event: {
-    username: string;
-    password: string;
+    onLogin(event: {
+        username: string;
+        password: string;
     }): void {
-
         this.loading = true;
-
-        Promise.resolve().then(() => {
-
-            const authenticated = this.auth.login(
-                event.username,
-                event.password
-            );
-
-            this.loading = false;
-
-            if (authenticated) {
-
-                this.errorMessage = '';
-
+        this.errorMessage = '';
+        this.auth.login(event.username, event.password).subscribe({
+            next: () => {
+                this.loading = false;
                 this.router.navigate(['/']);
-
-            } else {
-
-                this.errorMessage =
-                    'Usuario o contraseña incorrectos';
-
+            },
+            error: (err: any) => {
+                this.loading = false;
+                this.errorMessage = err?.error?.message || 'Usuario o contraseña incorrectos';
             }
-
         });
-
     }
 
 }

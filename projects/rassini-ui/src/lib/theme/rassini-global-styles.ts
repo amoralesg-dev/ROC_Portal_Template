@@ -2,13 +2,19 @@ export const RASSINI_GLOBAL_STYLES = `
 
 :root {
 
-    --surface-ground: #f3f4f6;
+    --surface-ground: #f4f6f9;
 
     --surface-card: #ffffff;
 
-    --text-color: #616166;
+    --surface-border: #e2e8f0;
 
-    --card-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+    --text-color: #334155;
+
+    --text-color-secondary: #64748b;
+
+    --primary-color: #f26522;
+
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, .06);
 
 }
 

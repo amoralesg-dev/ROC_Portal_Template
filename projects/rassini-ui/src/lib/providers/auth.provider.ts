@@ -39,12 +39,14 @@ export function provideRassiniAuth(config: AuthConfiguration): Provider[] {
                                 auth.restoreSession().pipe(
                                     catchError(err => {
                                         console.error('APP_INITIALIZER restoreSession failed', err);
+                                        auth.logout();
                                         return of(null);
                                     })
                                 )
                             );
                         } catch (e) {
                             console.error('APP_INITIALIZER unhandled error', e);
+                            auth.logout();
                         }
                     }
                     return true;

@@ -43,3 +43,6 @@ export * from './lib/layout/components/topbar/rassini-topbar';
 export * from './lib/layout/models/rassini-menu-item';
 
 export * from './lib/theme/rassini-preset';
+export * from './lib/theme/provide-rassini-theme';
+
+export * from './lib/corporate';

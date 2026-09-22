@@ -74,6 +74,17 @@
     list-style: none;
 }
 
+.rui-menu-group .rui-submenu {
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+
+    a {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+    }
+}
+
 .rui-menu-group li {
 
     margin-bottom: .25rem;

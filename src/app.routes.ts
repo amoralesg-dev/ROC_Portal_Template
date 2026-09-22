@@ -94,6 +94,23 @@ export const appRoutes: Routes = [
     },
 
     {
+        path: 'employee-portal',
+        redirectTo: 'auth/login',
+        pathMatch: 'full'
+    },
+
+    {
+        path: 'employee-portal/auth',
+        loadChildren: () =>
+            import('./app/pages/auth/auth.routes')
+    },
+
+    {
+        path: 'employee-portal/notfound',
+        redirectTo: 'auth/login'
+    },
+
+    {
         path: '**',
         redirectTo: '/notfound'
     }
