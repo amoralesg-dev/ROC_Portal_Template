@@ -51,7 +51,7 @@ export class AuthenticationService {
   readonly activeBusinessUnit = signal<CorporateBusinessUnit | null>(null);
 
   constructor(
-    private readonly http: HttpClient,
+    @Inject(HttpClient) private readonly http: HttpClient,
     @Optional() @Inject(BUSINESS_UNIT_CATALOG_ADAPTER) private readonly catalogAdapter: BusinessUnitCatalogAdapter | null
   ) {}
 
