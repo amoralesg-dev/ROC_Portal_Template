@@ -1,14 +1,12 @@
 import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { Auth } from '../../services/auth';
-import { AUTH_CONFIG } from '../../providers/auth.provider';
+import { AccountSecurityService } from '../../services/account-security.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -70,10 +68,8 @@ export class ChangePasswordComponent {
   backendError = signal<string | null>(null);
 
   private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
-  private auth = inject(Auth);
+  private account = inject(AccountSecurityService);
   private messageService = inject(MessageService, { optional: true });
-  private config = inject(AUTH_CONFIG);
   private router = inject(Router);
 
   constructor() {
@@ -114,8 +110,8 @@ export class ChangePasswordComponent {
   submit() {
     if (this.form.invalid) return;
     
-    const user = this.auth.currentUser();
-    if (!user || !user.id) {
+    const userId = this.account.userId;
+    if (userId === null || userId === undefined || userId === '') {
       this.backendError.set('No se encontró el ID del usuario.');
       return;
     }
@@ -125,22 +121,18 @@ export class ChangePasswordComponent {
 
     const payload = this.form.value;
 
-    const urlTemplate = this.config.changePasswordUrl || `/api/users/{id}/change-password`;
-    const finalUrl = urlTemplate.replace('{id}', String(user.id));
-
-    console.log('AUTH CONFIG', this.config);
-    console.log('CHANGE PASSWORD URL', this.config.changePasswordUrl);
-    console.log('FINAL URL', finalUrl);
-
-    this.http.post(finalUrl, payload).subscribe({
+    this.account.changePassword(payload).subscribe({
       next: () => {
         this.loading.set(false);
         this.messageService?.add({ severity: 'success', summary: 'Éxito', detail: 'Contraseña actualizada correctamente' });
         this.visible = false;
         
-        // Auto logout
-        this.auth.logout();
-        this.router.navigate(['/auth/login']); // Redirect to login using router
+        // Auto logout (legacy: /auth/login; OIDC: logout corporativo)
+        const wasOidc = this.account.isOidcSession;
+        this.account.logoutAfterPasswordChange();
+        if (!wasOidc) {
+          this.router.navigate(['/auth/login']); // Redirect to login using router
+        }
       },
       error: (err) => {
         this.loading.set(false);

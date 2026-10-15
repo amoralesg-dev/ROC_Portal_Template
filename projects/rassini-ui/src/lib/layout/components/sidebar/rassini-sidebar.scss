@@ -6,7 +6,7 @@
 
     left: 1rem;
 
-    width: 18rem;
+    width: 15.5rem;
 
     height: calc(100vh - 7rem);
 
@@ -45,16 +45,16 @@
 
 .rui-menu-group {
 
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .rui-menu-group-title {
 
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 
-    padding-left: 0.5rem;
+    padding: 0.35rem 0.5rem;
 
-    font-size: .85rem;
+    font-size: .82rem;
 
     font-weight: 600;
 
@@ -63,6 +63,35 @@
     letter-spacing: .03rem;
 
     color: #565A5C;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-radius: 0.5rem;
+
+    transition: background-color .15s ease, color .15s ease;
+
+    &.rui-menu-group-collapsible {
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.04);
+            color: #212529;
+        }
+    }
+}
+
+.rui-chevron {
+    font-size: 0.75rem;
+    color: #8E9297;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.rotated {
+        transform: rotate(90deg);
+    }
 }
 
 .rui-menu-group ul {
@@ -74,13 +103,51 @@
     list-style: none;
 }
 
+.rui-parent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+    border-radius: .75rem;
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color .2s, color .2s;
+
+    .rui-item-content {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+
+        i {
+            width: 1rem;
+            min-width: 1rem;
+            font-size: 1rem;
+            color: #6C757D;
+        }
+
+        span {
+            font-size: 0.95rem;
+        }
+    }
+
+    &:hover {
+        background: rgba(245, 154, 42, 0.08);
+        color: var(--primary-color, #F59A2A);
+
+        .rui-item-content i {
+            color: var(--primary-color, #F59A2A);
+        }
+    }
+}
+
 .rui-menu-group .rui-submenu {
-    padding-left: 1rem;
+    padding-left: 0.75rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
 
     a {
-        padding: 0.6rem 0.85rem;
+        padding: 0.55rem 0.85rem;
         font-size: 0.9rem;
     }
 }
@@ -98,7 +165,7 @@
 
     gap: .75rem;
 
-    padding: .85rem 1rem;
+    padding: .75rem 1rem;
 
     border-radius: .75rem;
 
