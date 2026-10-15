@@ -5,7 +5,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { Auth } from '../../services/auth';
+import { AccountSecurityService } from '../../services/account-security.service';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -15,7 +15,7 @@ import { finalize } from 'rxjs/operators';
     templateUrl: './mfa-settings.component.html'
 })
 export class MfaSettingsComponent {
-    private readonly auth = inject(Auth);
+    private readonly auth = inject(AccountSecurityService);
     private readonly cdr = inject(ChangeDetectorRef);
 
     visible = false;
@@ -25,11 +25,11 @@ export class MfaSettingsComponent {
 
     // Estado del usuario
     get isMfaEnabled(): boolean {
-        return this.auth.currentUser()?.mfaEnabled ?? false;
+        return this.auth.mfaEnabled;
     }
 
     get isMfaRequired(): boolean {
-        return this.auth.currentUser()?.mfaRequired ?? false;
+        return this.auth.mfaRequired;
     }
 
     // Flujo de Setup
@@ -43,6 +43,21 @@ export class MfaSettingsComponent {
     show(): void {
         this.reset();
         this.visible = true;
+        if (this.auth.isOidcSession) {
+            // En sesión OIDC el estado MFA no viene en el token: se consulta antes de decidir el flujo.
+            this.loading = true;
+            this.auth.refreshContext().pipe(
+                finalize(() => {
+                    this.loading = false;
+                    this.cdr.detectChanges();
+                })
+            ).subscribe(() => {
+                if (!this.isMfaEnabled) {
+                    this.startSetup();
+                }
+            });
+            return;
+        }
         if (!this.isMfaEnabled) {
             this.startSetup();
         }
@@ -93,7 +108,7 @@ export class MfaSettingsComponent {
                 this.successMessage = 'Autenticador activado con éxito.';
                 this.setupData = null;
                 // Actualizar contexto para reflejar mfaEnabled = true
-                this.auth.loadContext().subscribe();
+                this.auth.refreshContext().subscribe();
             },
             error: (err) => {
                 this.errorMessage = err.error?.message || 'Código incorrecto.';
@@ -115,7 +130,7 @@ export class MfaSettingsComponent {
                 this.password = '';
                 this.disableCode = '';
                 // Actualizar contexto para reflejar mfaEnabled = false
-                this.auth.loadContext().subscribe();
+                this.auth.refreshContext().subscribe();
             },
             error: (err) => {
                 this.errorMessage = err.error?.message || 'Código o contraseña incorrectos.';
