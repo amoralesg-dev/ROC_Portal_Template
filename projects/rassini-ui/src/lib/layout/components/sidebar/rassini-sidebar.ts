@@ -18,97 +18,124 @@ import { RassiniMenuItem } from '../../models';
 
             <ul class="rui-menu">
 
-                @for (group of menu; track group.label) {
+                @for (group of menu; track (group.code || group.label)) {
 
                     <li class="rui-menu-group">
 
-                        <div class="rui-menu-group-title">
-                            {{ group.label }}
-                        </div>
+                        @if (hasChildren(group)) {
+                            <div
+                                class="rui-menu-group-title rui-menu-group-collapsible"
+                                role="button"
+                                tabindex="0"
+                                (click)="toggleGroup(group, $event)"
+                                (keydown.enter)="toggleGroup(group, $event)"
+                                (keydown.space)="toggleGroup(group, $event)">
+                                <span class="rui-group-label">{{ group.label }}</span>
+                                <i
+                                    class="pi pi-chevron-right rui-chevron"
+                                    [class.rotated]="isGroupExpanded(group)">
+                                </i>
+                            </div>
+                        } @else {
+                            <div class="rui-menu-group-title">
+                                <span class="rui-group-label">{{ group.label }}</span>
+                            </div>
+                        }
 
-                        @if (group.items) {
+                        @if (group.items && isGroupExpanded(group)) {
 
-                            <ul>
+                            <ul class="rui-menu-items">
 
-                                @for (item of group.items; track item.label) {
+                                @for (item of group.items; track (item.code || item.label)) {
 
-                                    <li>
+                                    <li class="rui-menu-item-wrapper">
 
-                                        @if (!isInternalNavigation(item)) {
+                                        @if (hasChildren(item)) {
 
-                                            <a
-                                                [href]="sanitizeUrl(item.resolvedUrl || item.externalUrl || item.url)"
-                                                [attr.target]="getTarget(item)"
-                                                rel="noopener noreferrer"
-                                                (click)="onItemClick(item, $event)">
-
+                                            <div
+                                                class="rui-parent-item"
+                                                role="button"
+                                                tabindex="0"
+                                                (click)="toggleItem(item, $event)"
+                                                (keydown.enter)="toggleItem(item, $event)"
+                                                (keydown.space)="toggleItem(item, $event)">
+                                                <div class="rui-item-content">
+                                                    @if (item.icon) {
+                                                        <i [class]="item.icon"></i>
+                                                    }
+                                                    <span>{{ item.label }}</span>
+                                                </div>
                                                 <i
-                                                    [class]="item.icon">
+                                                    class="pi pi-chevron-right rui-chevron"
+                                                    [class.rotated]="isItemExpanded(item)">
                                                 </i>
+                                            </div>
 
-                                                <span>
-                                                    {{ item.label }}
-                                                </span>
-
-                                            </a>
+                                            @if (isItemExpanded(item)) {
+                                                <ul class="rui-submenu">
+                                                    @for (subItem of item.items; track (subItem.code || subItem.label)) {
+                                                        <li>
+                                                            @if (!isInternalNavigation(subItem)) {
+                                                                <a
+                                                                    [href]="sanitizeUrl(subItem.resolvedUrl || subItem.externalUrl || subItem.url)"
+                                                                    [attr.target]="getTarget(subItem)"
+                                                                    rel="noopener noreferrer"
+                                                                    (click)="onItemClick(subItem, $event)">
+                                                                    <i [class]="subItem.icon"></i>
+                                                                    <span>{{ subItem.label }}</span>
+                                                                </a>
+                                                            } @else {
+                                                                <a
+                                                                    [routerLink]="getInternalRoute(subItem)"
+                                                                    routerLinkActive="active"
+                                                                    (click)="onItemClick(subItem, $event)">
+                                                                    <i [class]="subItem.icon"></i>
+                                                                    <span>{{ subItem.label }}</span>
+                                                                </a>
+                                                            }
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
 
                                         } @else {
 
-                                            <a
-                                                [routerLink]="getInternalRoute(item)"
-                                                routerLinkActive="active"
-                                                (click)="onItemClick(item, $event)">
+                                            @if (!isInternalNavigation(item)) {
 
-                                                <i
-                                                    [class]="item.icon">
-                                                </i>
+                                                <a
+                                                    [href]="sanitizeUrl(item.resolvedUrl || item.externalUrl || item.url)"
+                                                    [attr.target]="getTarget(item)"
+                                                    rel="noopener noreferrer"
+                                                    (click)="onItemClick(item, $event)">
 
-                                                <span>
-                                                    {{ item.label }}
-                                                </span>
+                                                    <i
+                                                        [class]="item.icon">
+                                                    </i>
 
-                                            </a>
+                                                    <span>
+                                                        {{ item.label }}
+                                                    </span>
 
-                                        }
+                                                </a>
 
-                                        @if (item.items && item.items.length > 0) {
+                                            } @else {
 
-                                            <ul class="rui-submenu">
+                                                <a
+                                                    [routerLink]="getInternalRoute(item)"
+                                                    routerLinkActive="active"
+                                                    (click)="onItemClick(item, $event)">
 
-                                                @for (subItem of item.items; track subItem.label) {
+                                                    <i
+                                                        [class]="item.icon">
+                                                    </i>
 
-                                                    <li>
+                                                    <span>
+                                                        {{ item.label }}
+                                                    </span>
 
-                                                        @if (!isInternalNavigation(subItem)) {
+                                                </a>
 
-                                                            <a
-                                                                [href]="sanitizeUrl(subItem.resolvedUrl || subItem.externalUrl || subItem.url)"
-                                                                [attr.target]="getTarget(subItem)"
-                                                                rel="noopener noreferrer"
-                                                                (click)="onItemClick(subItem, $event)">
-
-                                                                <i [class]="subItem.icon"></i>
-                                                                <span>{{ subItem.label }}</span>
-                                                            </a>
-
-                                                        } @else {
-
-                                                            <a
-                                                                [routerLink]="getInternalRoute(subItem)"
-                                                                routerLinkActive="active"
-                                                                (click)="onItemClick(subItem, $event)">
-
-                                                                <i [class]="subItem.icon"></i>
-                                                                <span>{{ subItem.label }}</span>
-                                                            </a>
-
-                                                        }
-
-                                                    </li>
-
-                                                }
-
-                                            </ul>
+                                            }
 
                                         }
 
@@ -131,7 +158,15 @@ import { RassiniMenuItem } from '../../models';
 })
 export class RassiniSidebar {
 
-    private readonly router = inject(Router, { optional: true });
+    private readonly router: Router | null = null;
+
+    constructor() {
+        try {
+            this.router = inject(Router, { optional: true });
+        } catch {
+            this.router = null;
+        }
+    }
 
     @Input()
     menu: RassiniMenuItem[] = [];
@@ -141,6 +176,107 @@ export class RassiniSidebar {
 
     @Output()
     itemClick = new EventEmitter<void>();
+
+    /**
+     * Map to store explicit user toggle overrides (expanded = true / collapsed = false)
+     */
+    private readonly expansionOverrides = new Map<string, boolean>();
+
+    private getItemKey(item: RassiniMenuItem): string {
+        return item.code || item.label || item.routerLink?.toString() || '';
+    }
+
+    hasChildren(item?: RassiniMenuItem | null): boolean {
+        return !!(item && item.items && item.items.length > 0);
+    }
+
+    isGroupExpanded(group: RassiniMenuItem): boolean {
+        const key = this.getItemKey(group);
+        if (this.expansionOverrides.has(key)) {
+            return this.expansionOverrides.get(key) === true;
+        }
+        if (group.expanded !== undefined) {
+            return group.expanded;
+        }
+        // Auto-expand if any descendant is active in current router
+        if (this.isAnyChildActive(group)) {
+            return true;
+        }
+        // By default, groups without explicit state are collapsed initially
+        return false;
+    }
+
+    toggleGroup(group: RassiniMenuItem, event?: Event): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const current = this.isGroupExpanded(group);
+        const key = this.getItemKey(group);
+        this.expansionOverrides.set(key, !current);
+    }
+
+    isItemExpanded(item: RassiniMenuItem): boolean {
+        const key = this.getItemKey(item);
+        if (this.expansionOverrides.has(key)) {
+            return this.expansionOverrides.get(key) === true;
+        }
+        if (item.expanded !== undefined) {
+            return item.expanded;
+        }
+        // Auto-expand if any descendant is active in current router
+        if (this.isAnyChildActive(item)) {
+            return true;
+        }
+        // By default, sub-items are collapsed unless specified or active
+        return false;
+    }
+
+    toggleItem(item: RassiniMenuItem, event?: Event): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const current = this.isItemExpanded(item);
+        const key = this.getItemKey(item);
+        this.expansionOverrides.set(key, !current);
+    }
+
+    isAnyChildActive(item: RassiniMenuItem): boolean {
+        if (!item.items || item.items.length === 0) return false;
+        return item.items.some(child => this.isNodeActive(child));
+    }
+
+    isNodeActive(item: RassiniMenuItem): boolean {
+        if (this.router) {
+            const currentUrl = this.router.url.split('?')[0].split('#')[0];
+            const route = this.getInternalRoute(item);
+            if (route) {
+                const routeStr = (Array.isArray(route) ? route.join('/') : route).split('?')[0].split('#')[0];
+                if (routeStr && (currentUrl === routeStr || currentUrl.startsWith(routeStr + '/'))) {
+                    return true;
+                }
+            }
+        }
+        if (typeof window !== 'undefined' && window.location) {
+            const currentPath = window.location.pathname;
+            const targetUrl = item.externalUrl || item.url;
+            if (targetUrl) {
+                try {
+                    const parsed = new URL(targetUrl, window.location.origin);
+                    if (parsed.origin === window.location.origin && currentPath === parsed.pathname) {
+                        return true;
+                    }
+                } catch {
+                    // Ignore URL parse error
+                }
+            }
+        }
+        if (item.items && item.items.length > 0) {
+            return this.isAnyChildActive(item);
+        }
+        return false;
+    }
 
     sanitizeUrl(url?: string | null): string {
         if (!url || typeof url !== 'string') return '#';

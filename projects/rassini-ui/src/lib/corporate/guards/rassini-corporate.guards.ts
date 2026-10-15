@@ -11,8 +11,16 @@ export const rassiniAuthGuard: CanActivateFn = async (route, state) => {
   }
 
   try {
+    if (state?.url) {
+      authService.getStorageAdapter().setItem('rassini_redirect_url', state.url);
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem('rassini_redirect_url', state.url);
+      }
+    }
     const authUrl = await authService.buildAuthorizationUrl();
-    window.location.href = authUrl;
+    if (typeof window !== 'undefined' && window.location) {
+      window.location.href = authUrl;
+    }
     return false;
   } catch (err) {
     console.error('Failed to initiate corporate authorization', err);
