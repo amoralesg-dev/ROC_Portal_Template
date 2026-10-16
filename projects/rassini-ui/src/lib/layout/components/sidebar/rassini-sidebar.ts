@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { RassiniMenuItem } from '../../models';
+import { RassiniI18nService } from '../../../i18n';
 
 @Component({
     selector: 'rui-sidebar',
@@ -30,7 +31,7 @@ import { RassiniMenuItem } from '../../models';
                                 (click)="toggleGroup(group, $event)"
                                 (keydown.enter)="toggleGroup(group, $event)"
                                 (keydown.space)="toggleGroup(group, $event)">
-                                <span class="rui-group-label">{{ group.label }}</span>
+                                <span class="rui-group-label">{{ resolveLabel(group) }}</span>
                                 <i
                                     class="pi pi-chevron-right rui-chevron"
                                     [class.rotated]="isGroupExpanded(group)">
@@ -38,7 +39,7 @@ import { RassiniMenuItem } from '../../models';
                             </div>
                         } @else {
                             <div class="rui-menu-group-title">
-                                <span class="rui-group-label">{{ group.label }}</span>
+                                <span class="rui-group-label">{{ resolveLabel(group) }}</span>
                             </div>
                         }
 
@@ -63,7 +64,7 @@ import { RassiniMenuItem } from '../../models';
                                                     @if (item.icon) {
                                                         <i [class]="item.icon"></i>
                                                     }
-                                                    <span>{{ item.label }}</span>
+                                                    <span>{{ resolveLabel(item) }}</span>
                                                 </div>
                                                 <i
                                                     class="pi pi-chevron-right rui-chevron"
@@ -82,7 +83,7 @@ import { RassiniMenuItem } from '../../models';
                                                                     rel="noopener noreferrer"
                                                                     (click)="onItemClick(subItem, $event)">
                                                                     <i [class]="subItem.icon"></i>
-                                                                    <span>{{ subItem.label }}</span>
+                                                                    <span>{{ resolveLabel(subItem) }}</span>
                                                                 </a>
                                                             } @else {
                                                                 <a
@@ -90,7 +91,7 @@ import { RassiniMenuItem } from '../../models';
                                                                     routerLinkActive="active"
                                                                     (click)="onItemClick(subItem, $event)">
                                                                     <i [class]="subItem.icon"></i>
-                                                                    <span>{{ subItem.label }}</span>
+                                                                    <span>{{ resolveLabel(subItem) }}</span>
                                                                 </a>
                                                             }
                                                         </li>
@@ -100,7 +101,23 @@ import { RassiniMenuItem } from '../../models';
 
                                         } @else {
 
-                                            @if (!isInternalNavigation(item)) {
+                                            @if (item.command) {
+
+                                                <a
+                                                    href="javascript:void(0)"
+                                                    (click)="onItemClick(item, $event)">
+
+                                                    <i
+                                                        [class]="item.icon">
+                                                    </i>
+
+                                                    <span>
+                                                        {{ resolveLabel(item) }}
+                                                    </span>
+
+                                                </a>
+
+                                            } @else if (!isInternalNavigation(item)) {
 
                                                 <a
                                                     [href]="sanitizeUrl(item.resolvedUrl || item.externalUrl || item.url)"
@@ -113,7 +130,7 @@ import { RassiniMenuItem } from '../../models';
                                                     </i>
 
                                                     <span>
-                                                        {{ item.label }}
+                                                        {{ resolveLabel(item) }}
                                                     </span>
 
                                                 </a>
@@ -130,7 +147,7 @@ import { RassiniMenuItem } from '../../models';
                                                     </i>
 
                                                     <span>
-                                                        {{ item.label }}
+                                                        {{ resolveLabel(item) }}
                                                     </span>
 
                                                 </a>
@@ -159,6 +176,7 @@ import { RassiniMenuItem } from '../../models';
 export class RassiniSidebar {
 
     private readonly router: Router | null = null;
+    readonly i18n = inject(RassiniI18nService, { optional: true });
 
     constructor() {
         try {
@@ -166,6 +184,14 @@ export class RassiniSidebar {
         } catch {
             this.router = null;
         }
+    }
+
+    resolveLabel(item?: RassiniMenuItem | null): string {
+        if (!item) return '';
+        if (this.i18n) {
+            return this.i18n.resolveMenuLabel(item.code, item.label);
+        }
+        return item.label || '';
     }
 
     @Input()

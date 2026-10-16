@@ -8,13 +8,14 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { AccountSecurityService } from '../../services/account-security.service';
 import { Router } from '@angular/router';
+import { RassiniI18nService } from '../../i18n';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, DialogModule, InputTextModule, PasswordModule, ButtonModule],
   template: `
-    <p-dialog header="Cambiar contraseña" [(visible)]="visible" [modal]="true" [style]="{width: '400px'}" appendTo="body" (onHide)="onHide()">
+    <p-dialog [header]="t('rassini.changePassword.title', 'Cambiar contraseña')" [(visible)]="visible" [modal]="true" [style]="{width: '400px'}" appendTo="body" (onHide)="onHide()">
       
       <div *ngIf="backendError()" class="p-mb-3 text-red-500 font-bold mb-3">
         {{ backendError() }}
@@ -23,38 +24,38 @@ import { Router } from '@angular/router';
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
         
         <div class="flex flex-col gap-2">
-          <label for="currentPassword">Contraseña actual</label>
+          <label for="currentPassword">{{ t('rassini.changePassword.currentPassword', 'Contraseña actual') }}</label>
           <p-password id="currentPassword" formControlName="currentPassword" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full"></p-password>
           <small class="text-red-500" *ngIf="form.get('currentPassword')?.touched && form.get('currentPassword')?.invalid">
-            Este campo es requerido.
+            {{ t('rassini.changePassword.requiredField', 'Este campo es requerido.') }}
           </small>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="newPassword">Nueva contraseña</label>
+          <label for="newPassword">{{ t('rassini.changePassword.newPassword', 'Nueva contraseña') }}</label>
           <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
           <small class="text-red-500" *ngIf="form.get('newPassword')?.touched && form.get('newPassword')?.hasError('required')">
-            Este campo es requerido.
+            {{ t('rassini.changePassword.requiredField', 'Este campo es requerido.') }}
           </small>
           <small class="text-red-500" *ngIf="form.get('newPassword')?.touched && form.get('newPassword')?.hasError('sameAsCurrent')">
-            La nueva contraseña debe ser diferente a la actual.
+            {{ t('rassini.changePassword.sameAsCurrent', 'La nueva contraseña debe ser diferente a la actual.') }}
           </small>
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="confirmPassword">Confirmar nueva contraseña</label>
+          <label for="confirmPassword">{{ t('rassini.changePassword.confirmPassword', 'Confirmar nueva contraseña') }}</label>
           <p-password id="confirmPassword" formControlName="confirmPassword" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full"></p-password>
           <small class="text-red-500" *ngIf="form.get('confirmPassword')?.touched && form.get('confirmPassword')?.hasError('required')">
-            Este campo es requerido.
+            {{ t('rassini.changePassword.requiredField', 'Este campo es requerido.') }}
           </small>
           <small class="text-red-500" *ngIf="form.get('confirmPassword')?.touched && form.hasError('mismatch')">
-            Las contraseñas no coinciden.
+            {{ t('rassini.changePassword.mismatch', 'Las contraseñas no coinciden.') }}
           </small>
         </div>
 
         <div class="flex justify-end gap-2 mt-4">
-          <p-button label="Cancelar" severity="secondary" (click)="visible = false" type="button"></p-button>
-          <p-button label="Guardar" type="submit" [disabled]="form.invalid || loading()"></p-button>
+          <p-button [label]="t('rassini.actions.cancel', 'Cancelar')" severity="secondary" (click)="visible = false" type="button"></p-button>
+          <p-button [label]="t('rassini.actions.save', 'Guardar')" type="submit" [disabled]="form.invalid || loading()"></p-button>
         </div>
       </form>
     </p-dialog>
@@ -71,6 +72,11 @@ export class ChangePasswordComponent {
   private account = inject(AccountSecurityService);
   private messageService = inject(MessageService, { optional: true });
   private router = inject(Router);
+  readonly i18n = inject(RassiniI18nService, { optional: true });
+
+  t(key: string, def?: string): string {
+    return this.i18n ? this.i18n.translate(key, def) : (def || key);
+  }
 
   constructor() {
     this.form = this.fb.group({

@@ -4,7 +4,8 @@ import {
     Output,
     inject,
     ViewChild,
-    OnInit
+    OnInit,
+    computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -16,6 +17,7 @@ import { Auth } from '../../../services/auth';
 import { AuthenticationService } from '../../../corporate/services/authentication.service';
 import { ChangePasswordComponent } from '../../../components/change-password/change-password.component';
 import { MfaSettingsComponent } from '../../../components/mfa-settings/mfa-settings.component';
+import { RassiniI18nService } from '../../../i18n';
 
 @Component({
     selector: 'rui-topbar',
@@ -57,7 +59,7 @@ import { MfaSettingsComponent } from '../../../components/mfa-settings/mfa-setti
                     <!-- Lightweight Profile Dropdown Menu without PrimeNG MenuModule / RouterModule dependency -->
                     <div *ngIf="profileMenuOpen" class="rui-profile-dropdown" style="position: absolute; right: 0; top: 100%; margin-top: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 220px; z-index: 1100; overflow: hidden;">
                         <ul style="list-style: none; margin: 0; padding: 6px 0; font-size: 0.9rem;">
-                            <li *ngFor="let item of profileMenuItems">
+                            <li *ngFor="let item of profileMenuItems()">
                                 <ng-container *ngIf="item.separator">
                                     <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 4px 0;">
                                 </ng-container>
@@ -74,6 +76,7 @@ import { MfaSettingsComponent } from '../../../components/mfa-settings/mfa-setti
 
                 <i
                     class="pi pi-sign-out cursor-pointer"
+                    [title]="t('rassini.shell.logout', 'Cerrar Sesión')"
                     (click)="testLogout()">
                 </i>
 
@@ -81,26 +84,26 @@ import { MfaSettingsComponent } from '../../../components/mfa-settings/mfa-setti
 
         </header>
 
-        <p-dialog header="Mi Perfil" [(visible)]="profileVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
+        <p-dialog [header]="t('rassini.shell.profile', 'Mi Perfil')" [(visible)]="profileVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
             <div class="flex flex-col gap-3">
-                <div><strong>Usuario:</strong> {{ displayUsername }}</div>
-                <div><strong>Email:</strong> {{ displayEmail }}</div>
-                <div><strong>Roles:</strong> {{ displayRoles.length ? displayRoles.join(', ') : 'Ninguno' }}</div>
+                <div><strong>{{ t('rassini.shell.user', 'Usuario') }}:</strong> {{ displayUsername }}</div>
+                <div><strong>{{ t('rassini.shell.email', 'Email') }}:</strong> {{ displayEmail }}</div>
+                <div><strong>{{ t('rassini.shell.roles', 'Roles') }}:</strong> {{ displayRoles.length ? displayRoles.join(', ') : t('rassini.shell.none', 'Ninguno') }}</div>
             </div>
         </p-dialog>
 
-        <p-dialog header="Mis Roles" [(visible)]="rolesVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
+        <p-dialog [header]="t('rassini.shell.roles', 'Mis Roles')" [(visible)]="rolesVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
             <ul class="list-none p-0 m-0">
                 <li *ngFor="let role of displayRoles" class="p-2 border-b">{{ role }}</li>
             </ul>
-            <div *ngIf="!displayRoles.length" class="p-2 text-gray-500">No tienes roles asignados.</div>
+            <div *ngIf="!displayRoles.length" class="p-2 text-gray-500">{{ t('rassini.shell.noRoles', 'No tienes roles asignados.') }}</div>
         </p-dialog>
 
-        <p-dialog header="Mis Permisos" [(visible)]="permissionsVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
+        <p-dialog [header]="t('rassini.shell.permissions', 'Mis Permisos')" [(visible)]="permissionsVisible" [modal]="true" [style]="{width: '400px'}" appendTo="body">
             <ul class="list-none p-0 m-0">
                 <li *ngFor="let perm of displayPermissions" class="p-2 border-b">{{ perm }}</li>
             </ul>
-            <div *ngIf="!displayPermissions.length" class="p-2 text-gray-500">No tienes permisos asignados.</div>
+            <div *ngIf="!displayPermissions.length" class="p-2 text-gray-500">{{ t('rassini.shell.noPermissions', 'No tienes permisos asignados.') }}</div>
         </p-dialog>
 
         <app-change-password #changePasswordDialog></app-change-password>
@@ -123,6 +126,11 @@ export class RassiniTopbar implements OnInit {
 
     auth = inject(Auth, { optional: true });
     corporateAuth = inject(AuthenticationService, { optional: true });
+    readonly i18n = inject(RassiniI18nService, { optional: true });
+
+    t(key: string, def?: string): string {
+        return this.i18n ? this.i18n.translate(key, def) : (def || key);
+    }
 
     get displayUsername(): string {
         return this.corporateAuth?.currentUser()?.username || this.auth?.currentUser()?.username || '';
@@ -148,39 +156,44 @@ export class RassiniTopbar implements OnInit {
     rolesVisible = false;
     permissionsVisible = false;
 
-    profileMenuItems: MenuItem[] = [
-        {
-            label: 'Mi Perfil',
-            icon: 'pi pi-user',
-            command: () => this.profileVisible = true
-        },
-        {
-            label: 'Seguridad (Autenticador 2FA)',
-            icon: 'pi pi-shield',
-            command: () => this.mfaSettingsDialog.show()
-        },
-        {
-            label: 'Cambiar Contraseña',
-            icon: 'pi pi-key',
-            command: () => this.changePasswordDialog.show()
-        },
-        {
-            label: 'Mis Roles',
-            icon: 'pi pi-id-card',
-            command: () => this.rolesVisible = true
-        },
-        {
-            label: 'Mis Permisos',
-            icon: 'pi pi-lock',
-            command: () => this.permissionsVisible = true
-        },
-        { separator: true },
-        {
-            label: 'Cerrar Sesión',
-            icon: 'pi pi-sign-out',
-            command: () => this.testLogout()
-        }
-    ];
+    readonly profileMenuItems = computed<MenuItem[]>(() => {
+        // Suscripción reactiva al cambio de idioma
+        this.i18n?.currentLang();
+
+        return [
+            {
+                label: this.t('rassini.shell.profile', 'Mi Perfil'),
+                icon: 'pi pi-user',
+                command: () => this.profileVisible = true
+            },
+            {
+                label: this.t('rassini.shell.security', 'Seguridad (Autenticador 2FA)'),
+                icon: 'pi pi-shield',
+                command: () => this.mfaSettingsDialog.show()
+            },
+            {
+                label: this.t('rassini.shell.changePassword', 'Cambiar Contraseña'),
+                icon: 'pi pi-key',
+                command: () => this.changePasswordDialog.show()
+            },
+            {
+                label: this.t('rassini.shell.roles', 'Mis Roles'),
+                icon: 'pi pi-id-card',
+                command: () => this.rolesVisible = true
+            },
+            {
+                label: this.t('rassini.shell.permissions', 'Mis Permisos'),
+                icon: 'pi pi-lock',
+                command: () => this.permissionsVisible = true
+            },
+            { separator: true },
+            {
+                label: this.t('rassini.shell.logout', 'Cerrar Sesión'),
+                icon: 'pi pi-sign-out',
+                command: () => this.testLogout()
+            }
+        ];
+    });
 
     ngOnInit() {
     }

@@ -46,3 +46,4 @@ export * from './lib/theme/rassini-preset';
 export * from './lib/theme/provide-rassini-theme';
 
 export * from './lib/corporate';
+export * from './lib/i18n';
