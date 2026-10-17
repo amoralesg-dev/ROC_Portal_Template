@@ -7,7 +7,7 @@
             alt="Rassini"
             class="rui-login-logo">
 
-        <h2>{{ title }}</h2>
+        <h2>{{ displayTitle }}</h2>
 
         
         @if (applicationName) {
@@ -19,26 +19,26 @@
         }
 
 
-        <span>{{ subtitle }}</span>
+        <span>{{ displaySubtitle }}</span>
 
         <div class="rui-login-form">
 
             @if (!mfaPending) {
-                <label>{{ usernameLabel }}</label>
+                <label>{{ displayUsernameLabel }}</label>
 
                 <input
                     pInputText
                     [(ngModel)]="username"
-                    placeholder="{{ usernamePlaceholder }}">
+                    [placeholder]="displayUsernamePlaceholder">
 
-                <label>{{ passwordLabel }}</label>
+                <label>{{ displayPasswordLabel }}</label>
 
                 <p-password
                     [(ngModel)]="password"
                     [toggleMask]="true"
                     [feedback]="false"
                     [fluid]="true"
-                    placeholder="{{ passwordPlaceholder }}">
+                    [placeholder]="displayPasswordPlaceholder">
                 </p-password>
 
                 <button
@@ -46,29 +46,29 @@
                     (click)="onLogin()"
                     [disabled]="!username || !password">
 
-                    {{ loading ? loadingText : loginButtonText }}
+                    {{ loading ? displayLoadingText : displayLoginButtonText }}
 
                 </button>
             } @else {
                 @if (mfaSetupRequired) {
                     <div style="text-align: center; margin-bottom: 1rem;">
-                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #555;">Un administrador ha habilitado la autenticación en dos pasos. Configura tu autenticador para continuar.</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #555;">{{ t('rassini.auth.login.mfaAdminSetupNotice', 'Un administrador ha habilitado la autenticación en dos pasos. Configura tu autenticador para continuar.') }}</p>
                         <div style="display: inline-block; position: relative; width: 200px; height: 200px; border: 1px solid #ccc; padding: 0.5rem; border-radius: 8px; background: white;">
                             <img [src]="qrCodeUri" alt="QR" width="200" height="200" style="display: block;">
                             <div style="position: absolute; width: 44px; height: 44px; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 6px; box-shadow: 0 0 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; background: white;">
                                 <span style="font-size: 1.875rem; font-weight: bold; color: #004b87; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">R</span>
                             </div>
                         </div>
-                        <p style="font-size: 0.8rem; color: #777; margin-top: 0.5rem;">Clave manual: <code style="background: #f1f1f1; padding: 2px 4px; border-radius: 4px; user-select: all;">{{ manualEntryKey }}</code></p>
+                        <p style="font-size: 0.8rem; color: #777; margin-top: 0.5rem;">{{ t('rassini.auth.login.manualKey', 'Clave manual:') }} <code style="background: #f1f1f1; padding: 2px 4px; border-radius: 4px; user-select: all;">{{ manualEntryKey }}</code></p>
                     </div>
                 }
 
-                <label>Código de verificación (MFA)</label>
+                <label>{{ t('rassini.auth.login.verificationCode', 'Código de verificación (MFA)') }}</label>
 
                 <input
                     pInputText
                     [(ngModel)]="mfaCode"
-                    placeholder="Código de 6 dígitos"
+                    [placeholder]="t('rassini.auth.login.sixDigitPlaceholder', 'Código de 6 dígitos')"
                     style="text-align: center; letter-spacing: 2px; font-size: 1.1rem;">
 
                 <button
@@ -76,20 +76,20 @@
                     (click)="onVerifyMfa()"
                     [disabled]="!mfaCode || mfaCode.length < 6 || countdown <= 0">
 
-                    {{ loading ? 'Verificando...' : 'Verificar' }}
+                    {{ loading ? t('rassini.auth.login.verifying', 'Verificando...') : t('rassini.auth.login.verify', 'Verificar') }}
 
                 </button>
                 
                 <div style="margin-top: 1rem; text-align: center;">
                     <div style="margin-bottom: 0.5rem; font-size: 0.85rem; color: #555;">
                         @if (countdown > 0) {
-                            <span>Tiempo restante: {{ Math.floor(countdown / 60) }}:{{ (countdown % 60).toString().padStart(2, '0') }}</span>
+                            <span>{{ t('rassini.auth.login.remainingTime', 'Tiempo restante:') }} {{ Math.floor(countdown / 60) }}:{{ (countdown % 60).toString().padStart(2, '0') }}</span>
                         } @else {
-                            <span style="color: #ef4444; font-weight: bold;">El tiempo expiró</span>
+                            <span style="color: #ef4444; font-weight: bold;">{{ t('rassini.auth.login.timeExpired', 'El tiempo expiró') }}</span>
                         }
                     </div>
                     <a href="javascript:void(0)" (click)="resetMfaState('')" style="color: var(--primary-color, #f59e0b); font-size: 0.9rem; text-decoration: none;">
-                        {{ countdown > 0 ? 'Cancelar' : 'Volver a iniciar sesión' }}
+                        {{ countdown > 0 ? t('rassini.auth.login.cancel', 'Cancelar') : t('rassini.auth.login.returnToLogin', 'Volver a iniciar sesión') }}
                     </a>
                 </div>
             }

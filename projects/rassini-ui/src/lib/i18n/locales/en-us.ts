@@ -51,6 +51,43 @@ export const EN_US_DICTIONARY: RassiniI18nDictionary = {
       enterCodeLabel: 'Enter the generated code to verify',
       generatingQr: 'Generating QR code...',
       initError: 'Error initiating MFA configuration.'
+    },
+    auth: {
+      login: {
+        title: 'Welcome to Rassini',
+        subtitle: 'Sign in to continue',
+        usernameLabel: 'Username',
+        usernamePlaceholder: 'Username',
+        passwordLabel: 'Password',
+        passwordPlaceholder: 'Password',
+        loginButton: 'Sign In',
+        signingIn: 'Signing in...',
+        mfaAdminSetupNotice: 'An administrator has enabled two-step verification. Set up your authenticator to continue.',
+        manualKey: 'Manual key:',
+        verificationCode: 'Verification code (MFA)',
+        sixDigitPlaceholder: '6-digit code',
+        verifying: 'Verifying...',
+        verify: 'Verify',
+        remainingTime: 'Remaining time:',
+        timeExpired: 'Time expired',
+        cancel: 'Cancel',
+        returnToLogin: 'Back to sign in',
+        invalidCredentials: 'Invalid username or password.',
+        userDisabled: 'Your account is disabled. Contact an administrator.',
+        internalError: 'An internal system error occurred. Please try again.',
+        connectionError: 'Unable to connect to service. Please try again.',
+        mfaSessionExpired: 'The MFA setup session expired. Please sign in again.',
+        mfaVerifyExpired: 'The verification session expired. Please sign in again.',
+        mfaInvalidCode: 'Incorrect code or expired token.',
+        tooManyAttempts: 'Too many failed attempts.',
+        forgotPassword: 'Forgot your password?',
+        contactAdmin: 'Contact system administrator'
+      }
+    },
+    sessionClosed: {
+      title: 'Signed Out Successfully',
+      description: 'Thank you for using the Rassini Corporate Platform.',
+      goToPortal: 'Go to Employee Portal'
     }
   }
 };

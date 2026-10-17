@@ -51,6 +51,43 @@ export const ES_MX_DICTIONARY: RassiniI18nDictionary = {
       enterCodeLabel: 'Ingresa el código generado para verificar',
       generatingQr: 'Generando código QR...',
       initError: 'Error al iniciar la configuración de MFA.'
+    },
+    auth: {
+      login: {
+        title: 'Bienvenido a Rassini',
+        subtitle: 'Inicia sesión para continuar',
+        usernameLabel: 'Usuario',
+        usernamePlaceholder: 'Usuario',
+        passwordLabel: 'Contraseña',
+        passwordPlaceholder: 'Contraseña',
+        loginButton: 'Iniciar Sesión',
+        signingIn: 'Iniciando sesión...',
+        mfaAdminSetupNotice: 'Un administrador ha habilitado la autenticación en dos pasos. Configura tu autenticador para continuar.',
+        manualKey: 'Clave manual:',
+        verificationCode: 'Código de verificación (MFA)',
+        sixDigitPlaceholder: 'Código de 6 dígitos',
+        verifying: 'Verificando...',
+        verify: 'Verificar',
+        remainingTime: 'Tiempo restante:',
+        timeExpired: 'El tiempo expiró',
+        cancel: 'Cancelar',
+        returnToLogin: 'Volver a iniciar sesión',
+        invalidCredentials: 'Usuario o contraseña incorrectos.',
+        userDisabled: 'Tu usuario se encuentra deshabilitado. Contacta a un administrador.',
+        internalError: 'Ocurrió un error interno del sistema. Intenta nuevamente.',
+        connectionError: 'No fue posible conectar con el servicio. Intenta nuevamente.',
+        mfaSessionExpired: 'La sesión de configuración MFA expiró. Inicia sesión nuevamente.',
+        mfaVerifyExpired: 'La sesión de verificación expiró. Inicia sesión nuevamente.',
+        mfaInvalidCode: 'Código incorrecto o token expirado.',
+        tooManyAttempts: 'Demasiados intentos fallidos.',
+        forgotPassword: '¿Olvidaste tu contraseña?',
+        contactAdmin: 'Contacta al administrador del sistema'
+      }
+    },
+    sessionClosed: {
+      title: 'Sesión cerrada correctamente',
+      description: 'Gracias por utilizar la Plataforma Corporativa Rassini.',
+      goToPortal: 'Ir al Portal de Empleados'
     }
   }
 };
