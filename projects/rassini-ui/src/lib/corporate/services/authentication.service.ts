@@ -346,11 +346,6 @@ export class AuthenticationService {
 
         this.applyTokens(tokens);
 
-        if (typeof window !== 'undefined' && window.history && window.location) {
-          const cleanUrl = window.location.pathname;
-          window.history.replaceState({}, document.title, cleanUrl);
-        }
-
         return tokens;
       })
     );

@@ -89,5 +89,30 @@ export const EN_US_DICTIONARY: RassiniI18nDictionary = {
       description: 'Thank you for using the Rassini Corporate Platform.',
       goToPortal: 'Go to Employee Portal'
     }
+  },
+  menu: {
+    MAIN: 'Main',
+    DASHBOARD: 'Dashboard',
+    IAM: 'IAM',
+    USERS: 'Users',
+    ROLES: 'Roles',
+    PERMISSIONS: 'Permissions',
+    MENUS: 'Menus',
+    APPLICATIONS: 'Applications',
+    IAM_BUSINESS_UNITS: 'Business Units',
+    PORTAL_DEMO: 'Demo Portal',
+    PORTAL_DEMO_ACCESS: 'Demo Portal Access',
+    SDK_DEMO_ROOT: 'SDK Demo',
+    SDK_DEMO_HOME: 'Home & Session',
+    SDK_DEMO_NAVIGATION: 'Navigation & Menus',
+    SDK_DEMO_CONTEXT: 'Context & BUs',
+    SDK_DEMO_GUARDS: 'Guards Validation',
+    SDK_DEMO_DIRECTIVES: 'UI Directives',
+    SDK_DEMO_LOGOUT: 'Sign Out',
+    CXP_ROOT: 'Accounts Payable',
+    CXP_PENDIENTES: 'Pending Payments',
+    CXP_ENVIADOS: 'Sent Payments',
+    CXP_ERRORES: 'Payments with Errors',
+    CXP_ANALITICA: 'Pending Analytics'
   }
 };

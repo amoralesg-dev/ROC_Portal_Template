@@ -28,7 +28,38 @@ export class SessionBootstrapService {
     private readonly authService: AuthenticationService,
     private readonly navigationService: NavigationService,
     private readonly contextService: ContextService
-  ) {}
+  ) {
+    this.registerBfcacheListener();
+  }
+
+  private registerBfcacheListener(): void {
+    if (typeof window === 'undefined') return;
+
+    window.addEventListener('pageshow', (event: PageTransitionEvent) => {
+      // Si el navegador restaura la página desde bfcache o historial
+      const isRestored = event.persisted || (window.performance && (window.performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'back_forward');
+
+      console.log(`[SESSION BOOTSTRAP] pageshow event | persisted=${event.persisted} | isRestored=${isRestored} | hasValidToken=${this.authService.hasValidTokenInStorage()}`);
+
+      if (isRestored && !this.authService.hasValidTokenInStorage()) {
+        console.log('[SESSION BOOTSTRAP] pageshow detecto token invalido o inexistente en sesion restaurada. Limpiando estado reactivo.');
+        this.authReady.set(false);
+        this.ready.set(false);
+        this.navigationReady.set(false);
+        this.contextReady.set(false);
+        this.authService.logout(false);
+        this.navigationService.clear();
+
+        // Si estamos en una ruta protegida (no en /logout ni en /callback), redirigir de inmediato al login central
+        const path = window.location.pathname;
+        if (!path.includes('/logout') && !path.includes('/callback')) {
+          console.log('[SESSION BOOTSTRAP] Redirigiendo documento restaurado a login...');
+          const postLogout = this.authService.getConfig()?.postLogoutRedirectUri || 'http://localhost:4205/employee-portal/auth/login';
+          window.location.replace(postLogout);
+        }
+      }
+    });
+  }
 
   initialize(config: CorporateOidcConfig, options: BootstrapOptions = { failOnNavigationError: false }): Promise<boolean> {
     if (this.initPromise) {
