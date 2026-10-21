@@ -54,7 +54,7 @@ export class SessionBootstrapService {
         const path = window.location.pathname;
         if (!path.includes('/logout') && !path.includes('/callback')) {
           console.log('[SESSION BOOTSTRAP] Redirigiendo documento restaurado a login...');
-          const postLogout = this.authService.getConfig()?.postLogoutRedirectUri || 'http://localhost:4205/employee-portal/auth/login';
+          const postLogout = this.authService.getConfig()?.postLogoutRedirectUri || '/employee-portal/auth/login';
           window.location.replace(postLogout);
         }
       }

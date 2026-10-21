@@ -76,7 +76,14 @@ import { RassiniI18nService } from '../../../i18n';
                                                 <ul class="rui-submenu">
                                                     @for (subItem of item.items; track (subItem.code || subItem.label)) {
                                                         <li>
-                                                            @if (!isInternalNavigation(subItem)) {
+                                                            @if (subItem.command) {
+                                                                <a
+                                                                    href="javascript:void(0)"
+                                                                    (click)="onItemClick(subItem, $event)">
+                                                                    <i [class]="subItem.icon"></i>
+                                                                    <span>{{ resolveLabel(subItem) }}</span>
+                                                                </a>
+                                                            } @else if (!isInternalNavigation(subItem)) {
                                                                 <a
                                                                     [href]="sanitizeUrl(subItem.resolvedUrl || subItem.externalUrl || subItem.url)"
                                                                     [attr.target]="getTarget(subItem)"
@@ -315,17 +322,53 @@ export class RassiniSidebar {
     }
 
     /**
-     * Determina si una URL pertenece al mismo origen (host y puerto) de la aplicación actual.
+     * Obtiene el contexto base de la aplicación actual (ej. '/employee-portal' o '/portal-cxp').
+     */
+    private getCurrentAppBasePath(): string {
+        if (typeof document !== 'undefined') {
+            const baseEl = document.querySelector('base');
+            const baseHref = baseEl?.getAttribute('href')?.trim();
+            if (baseHref && baseHref !== '/' && baseHref !== '.') {
+                const clean = baseHref.startsWith('/') ? baseHref : `/${baseHref}`;
+                return clean.endsWith('/') ? clean.slice(0, -1) : clean;
+            }
+        }
+        if (typeof window !== 'undefined' && window.location) {
+            const pathname = window.location.pathname || '/';
+            const firstSegment = pathname.split('/').filter(Boolean)[0];
+            if (firstSegment === 'employee-portal' || firstSegment === 'portal-cxp') {
+                return `/${firstSegment}`;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Determina si una URL pertenece al mismo origen y al mismo subcontexto de la aplicación actual.
      */
     isCurrentAppUrl(url?: string | null): boolean {
         if (!url || typeof url !== 'string') return false;
         if (typeof window === 'undefined' || !window.location) return false;
+        const trimmed = url.trim();
+        if (trimmed.startsWith('//')) return false;
         try {
-            if (url.startsWith('/') && !url.startsWith('//')) {
-                return true;
+            const parsed = new URL(trimmed, window.location.origin);
+            if (parsed.origin !== window.location.origin) {
+                return false;
             }
-            const parsed = new URL(url, window.location.origin);
-            return parsed.origin === window.location.origin;
+            const currentBasePath = this.getCurrentAppBasePath();
+            if (currentBasePath) {
+                return parsed.pathname === currentBasePath || parsed.pathname.startsWith(`${currentBasePath}/`);
+            }
+            // Si la app actual corre en raíz '/', pero la URL apunta a otro subcontexto corporativo distinto
+            if (parsed.pathname.startsWith('/portal-cxp/') || parsed.pathname === '/portal-cxp' ||
+                parsed.pathname.startsWith('/employee-portal/') || parsed.pathname === '/employee-portal') {
+                const currentPath = window.location.pathname || '/';
+                const targetFirst = parsed.pathname.split('/').filter(Boolean)[0];
+                const currentFirst = currentPath.split('/').filter(Boolean)[0];
+                return targetFirst === currentFirst;
+            }
+            return true;
         } catch {
             return false;
         }
@@ -333,18 +376,24 @@ export class RassiniSidebar {
 
     /**
      * Determina si el ítem debe navegar internamente con Angular Router:
-     * 1. Prioridad absoluta a routerLink si está presente.
-     * 2. Si targetType no es EXTERNO.
-     * 3. Si externalUrl o url coincide con el origin actual (window.location.origin).
-     * IMPORTANTE: NUNCA usar resolvedUrl para determinar navegación interna,
-     * ya que resolvedUrl apunta al flujo SSO (/oauth2/authorize).
+     * 1. Si el elemento tiene hijos (items), nunca navega por router (solo expande/contrae).
+     * 2. Prioridad absoluta a routerLink si está presente.
+     * 3. Si targetType es EXTERNO o authType es OIDC sin routerLink, NUNCA usar el Router interno de la SPA actual.
+     * 4. Si targetType no es EXTERNO.
+     * 5. Si externalUrl o url pertenece a la misma SPA actual (mismo origen y mismo baseHref).
      */
     isInternalNavigation(item?: RassiniMenuItem | null): boolean {
         if (!item) return false;
+        if (this.hasChildren(item)) {
+            return false;
+        }
         if (item.routerLink) {
             return true;
         }
-        if (item.targetType !== 'EXTERNO') {
+        if (item.targetType === 'EXTERNO' || item.authType === 'OIDC') {
+            return false;
+        }
+        if (item.targetType && item.targetType !== 'EXTERNO') {
             return true;
         }
         const targetUrl = item.externalUrl || item.url;
@@ -410,6 +459,12 @@ export class RassiniSidebar {
             return;
         }
 
+        // Elementos padre con hijos solo expanden/contraen el submenú, nunca inician navegación
+        if (this.hasChildren(item)) {
+            this.toggleItem(item, event);
+            return;
+        }
+
         if (item.command) {
             if (event) {
                 event.preventDefault();
@@ -435,7 +490,7 @@ export class RassiniSidebar {
             return;
         }
 
-        // Caso 2: Lanzamiento de aplicación externa (otro host/puerto)
+        // Caso 2: Lanzamiento de aplicación externa (otro subcontexto u otro host/puerto)
         if (event) {
             event.preventDefault();
             event.stopPropagation();
@@ -443,13 +498,20 @@ export class RassiniSidebar {
         const rawUrl = item.resolvedUrl || item.externalUrl || item.url;
         const safeUrl = this.sanitizeUrl(rawUrl);
         if (safeUrl && safeUrl !== '#') {
+            if (item.authType === 'OIDC' && typeof sessionStorage !== 'undefined') {
+                sessionStorage.setItem('rassini_redirect_url', safeUrl);
+            }
             if (this.isCorporateApp(item)) {
                 // Ecosistema corporativo Rassini: transición continua en la misma pestaña (_self)
                 window.location.href = safeUrl;
             } else {
-                // Sitios externos de terceros: nueva pestaña (_blank)
+                // Sitios externos de terceros: según openInNewTab / target
                 const targetWindow = this.getTarget(item);
-                window.open(safeUrl, targetWindow, 'noopener,noreferrer');
+                if (targetWindow === '_blank') {
+                    window.open(safeUrl, '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = safeUrl;
+                }
             }
         }
         this.itemClick.emit();
