@@ -300,13 +300,21 @@ export class AuthenticationService {
       return throwError(() => new Error('Missing authorization code in callback'));
     }
 
-    const expectedState = this.storageAdapter.getItem('rassini_auth_state');
-    const verifier = this.storageAdapter.getItem('rassini_auth_verifier');
-    const expectedNonce = this.storageAdapter.getItem('rassini_auth_nonce');
+    const expectedState = this.storageAdapter.getItem('rassini_auth_state') ||
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('rassini_auth_state') : null);
+    const verifier = this.storageAdapter.getItem('rassini_auth_verifier') ||
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('rassini_auth_verifier') : null);
+    const expectedNonce = this.storageAdapter.getItem('rassini_auth_nonce') ||
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('rassini_auth_nonce') : null);
 
     this.storageAdapter.removeItem('rassini_auth_state');
     this.storageAdapter.removeItem('rassini_auth_verifier');
     this.storageAdapter.removeItem('rassini_auth_nonce');
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('rassini_auth_state');
+      sessionStorage.removeItem('rassini_auth_verifier');
+      sessionStorage.removeItem('rassini_auth_nonce');
+    }
 
     if (!expectedState || expectedState !== returnedState) {
       return throwError(() => new Error('Invalid OAuth2 state parameter'));

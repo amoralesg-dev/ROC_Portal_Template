@@ -93,11 +93,21 @@ export class SessionBootstrapService {
       const code = urlParams.get('code');
       const state = urlParams.get('state');
 
+      console.log('[SESSION BOOTSTRAP] Initializing corporate OIDC bootstrap', {
+        applicationCode: config.applicationCode,
+        pathname: window.location.pathname,
+        hasCode: !!code,
+        hasState: !!state
+      });
+
       if (code && state) {
         try {
+          console.log('[SESSION BOOTSTRAP] Processing OAuth2 callback code exchange...');
           await lastValueFrom(this.authService.handleCallback(code, state));
           this.authReady.set(true);
+          console.log('[SESSION BOOTSTRAP] OAuth2 callback exchange succeeded. User:', this.authService.currentUser()?.username);
         } catch (err: any) {
+          console.error('[SESSION BOOTSTRAP] OAuth2 callback processing failed:', err?.message || err);
           this.authError.set(err.message || 'OAuth2 callback processing failed');
           this.bootstrapError.set(this.authError());
           return false;
@@ -108,6 +118,7 @@ export class SessionBootstrapService {
     // 2. Restore Session from storage if not already authenticated
     if (!this.authService.isAuthenticated()) {
       const restored = this.authService.restoreSession();
+      console.log('[SESSION BOOTSTRAP] Restore session from storage result:', restored);
       if (restored) {
         this.authReady.set(true);
       } else {

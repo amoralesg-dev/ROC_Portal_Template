@@ -6,7 +6,14 @@ export const rassiniAuthGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthenticationService);
   const router = inject(Router);
 
-  if (authService.hasValidTokenInStorage() || authService.isAuthenticated()) {
+  const hasToken = authService.hasValidTokenInStorage();
+  const isAuth = authService.isAuthenticated();
+  console.log(`[RASSINI AUTH GUARD] Evaluando ruta "${state?.url}" | isAuthenticated=${isAuth} | hasValidToken=${hasToken} | user=${authService.currentUser()?.username || 'null'}`);
+
+  if (hasToken || isAuth) {
+    if (!isAuth && hasToken) {
+      authService.restoreSession();
+    }
     return true;
   }
 
