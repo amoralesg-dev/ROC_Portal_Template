@@ -387,6 +387,17 @@ export class RassiniSidebar {
         if (this.hasChildren(item)) {
             return false;
         }
+        const itemAppCode = (item as any).applicationCode as string | undefined;
+        const currentAppCode = (this as any).contextService?.getApplicationCode?.()
+            || (this as any).authService?.getConfig?.()?.applicationCode;
+        if (itemAppCode && currentAppCode) {
+            if (itemAppCode === currentAppCode && item.routerLink) {
+                return true;
+            }
+            if (itemAppCode !== currentAppCode && (item.resolvedUrl || item.externalUrl)) {
+                return false;
+            }
+        }
         if (item.routerLink) {
             return true;
         }
