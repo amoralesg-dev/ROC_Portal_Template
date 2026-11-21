@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AccountSecurityService } from '../../services/account-security.service';
 import { finalize } from 'rxjs/operators';
+import { RassiniI18nService } from '../../i18n';
 
 @Component({
     selector: 'rui-mfa-settings',
@@ -17,6 +18,11 @@ import { finalize } from 'rxjs/operators';
 export class MfaSettingsComponent {
     private readonly auth = inject(AccountSecurityService);
     private readonly cdr = inject(ChangeDetectorRef);
+    readonly i18n = inject(RassiniI18nService, { optional: true });
+
+    t(key: string, def?: string): string {
+        return this.i18n ? this.i18n.translate(key, def) : (def || key);
+    }
 
     visible = false;
     loading = false;

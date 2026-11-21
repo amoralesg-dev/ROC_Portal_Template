@@ -1,29 +1,35 @@
 import '@angular/compiler';
 import { describe, it, expect } from 'vitest';
+import { Injector, runInInjectionContext } from '@angular/core';
 import { RassiniSidebar } from '../../layout/components/sidebar/rassini-sidebar';
 import { RassiniMenuItem } from '../../layout/models/rassini-menu-item';
 
+function createSidebar(): RassiniSidebar {
+  const injector = Injector.create({ providers: [] });
+  return runInInjectionContext(injector, () => new RassiniSidebar());
+}
+
 describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', () => {
   it('1. Menu legacy sin targetType mantiene comportamiento routerLink', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     sidebar.menu = [{ label: 'Admin', items: [{ label: 'Users', routerLink: '/users' }] }];
     expect(sidebar.menu[0].items?.[0].routerLink).toBe('/users');
   });
 
   it('2. Menu interno usando routerLink', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     sidebar.menu = [{ label: 'Portal', items: [{ label: 'Dashboard', routerLink: '/dashboard' }] }];
     expect(sidebar.menu[0].items?.[0].routerLink).toBe('/dashboard');
   });
 
   it('3. Menu externo valido con externalUrl', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const item: RassiniMenuItem = { label: 'Pagos', targetType: 'EXTERNO', externalUrl: 'https://pagos.rassini.com' };
     expect(sidebar.sanitizeUrl(item.externalUrl)).toBe('https://pagos.rassini.com');
   });
 
   it('4. Preferencia de resolvedUrl sobre externalUrl', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const item: RassiniMenuItem = {
       label: 'Pagos',
       targetType: 'EXTERNO',
@@ -41,43 +47,43 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('6. externalUrl ausente devuelve vacio o fallback', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const effectiveUrl = sidebar.sanitizeUrl(null);
     expect(effectiveUrl).toBe('#');
   });
 
   it('7. URL vacia sanitiza a #', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('')).toBe('#');
   });
 
   it('8. javascript: bloqueado', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('javascript:alert(1)')).toBe('#');
   });
 
   it('9. data: bloqueado', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('data:text/html,<script>alert(1)</script>')).toBe('#');
   });
 
   it('10. vbscript: bloqueado', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('vbscript:msgbox("xss")')).toBe('#');
   });
 
   it('11. file: bloqueado', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('file:///etc/passwd')).toBe('#');
   });
 
   it('12. Esquema desconocido o relativo seguro', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('/local/path')).toBe('/local/path');
   });
 
   it('13. http y https permitidos', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.sanitizeUrl('http://localhost:4201')).toBe('http://localhost:4201');
     expect(sidebar.sanitizeUrl('https://rassini.com')).toBe('https://rassini.com');
   });
@@ -89,7 +95,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('15. rel="noopener noreferrer" verificado', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar).toBeDefined();
   });
 
@@ -100,7 +106,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('17. Padre conserva expansion e items hijos', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     sidebar.menu = [{ label: 'Group 1', items: [{ label: 'Child 1', routerLink: '/c1' }] }];
     expect(sidebar.menu[0].items?.length).toBe(1);
   });
@@ -111,7 +117,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('19. itemClick se emite en onItemClick', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     let count = 0;
     sidebar.itemClick.subscribe(() => count++);
     sidebar.onItemClick({ label: 'Test' });
@@ -119,7 +125,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('20. No existe navegacion duplicada', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     let count = 0;
     sidebar.itemClick.subscribe(() => count++);
     sidebar.onItemClick();
@@ -127,7 +133,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('21. Seleccion visual legacy permanece', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.visible).toBe(true);
   });
 
@@ -138,7 +144,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('23. hasChildren detecta nodos padre con items', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const parent: RassiniMenuItem = { label: 'Parent', items: [{ label: 'Child', routerLink: '/child' }] };
     const leaf: RassiniMenuItem = { label: 'Leaf', routerLink: '/leaf' };
     expect(sidebar.hasChildren(parent)).toBe(true);
@@ -147,7 +153,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('24. toggleGroup alterna el estado de expansion del grupo sin navegar', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const group: RassiniMenuItem = { label: 'Modulo Compras', items: [{ label: 'Requisiciones', routerLink: '/req' }] };
     expect(sidebar.isGroupExpanded(group)).toBe(false);
 
@@ -168,7 +174,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('25. toggleItem alterna el estado de expansion de un sub-item padre', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     const item: RassiniMenuItem = {
       label: 'Subcategoria',
       items: [{ label: 'Hijo 1', routerLink: '/h1' }]
@@ -183,7 +189,7 @@ describe('Corporate SDK - RassiniSidebar Component Security & Compatibility', ()
   });
 
   it('26. isNodeActive detecta auto-expansion si la ruta coincide con un hijo', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     // Inyectando mock de router
     (sidebar as any).router = { url: '/pagos-pendientes?filter=1' };
 

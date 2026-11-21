@@ -3,11 +3,13 @@ import {
     Input,
     Output,
     EventEmitter,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    inject
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RassiniI18nService } from '../../../i18n';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -51,31 +53,31 @@ export class RassiniLogin {
         password: string;
     }>();
     @Input()
-    title = 'Bienvenido a Rassini';
+    title?: string;
 
     @Input()
-    subtitle = 'Inicia sesión para continuar';
+    subtitle?: string;
 
     @Input()
     applicationName = '';
 
     @Input()
-    usernameLabel = 'Usuario';
+    usernameLabel?: string;
 
     @Input()
-    usernamePlaceholder = 'Usuario';
+    usernamePlaceholder?: string;
 
     @Input()
-    passwordLabel = 'Contraseña';
+    passwordLabel?: string;
 
     @Input()
-    passwordPlaceholder = 'Contraseña';
+    passwordPlaceholder?: string;
 
     @Input()
-    loginButtonText = 'Iniciar Sesión';
+    loginButtonText?: string;
 
     @Input()
-    loadingText = 'Iniciando sesión...';
+    loadingText?: string;
 
     logo = RASSINI_LOGO;
 
@@ -93,12 +95,50 @@ export class RassiniLogin {
     
     Math = Math;
 
+    private readonly i18n = inject(RassiniI18nService, { optional: true });
+
     constructor(
         private readonly auth: Auth,
         private readonly router: Router,
         private readonly cdr: ChangeDetectorRef
     ) {
 
+    }
+
+    t(key: string, defaultValue: string): string {
+        return this.i18n ? this.i18n.translate(key, defaultValue) : defaultValue;
+    }
+
+    get displayTitle(): string {
+        return this.title ?? this.t('rassini.auth.login.title', 'Bienvenido a Rassini');
+    }
+
+    get displaySubtitle(): string {
+        return this.subtitle ?? this.t('rassini.auth.login.subtitle', 'Inicia sesión para continuar');
+    }
+
+    get displayUsernameLabel(): string {
+        return this.usernameLabel ?? this.t('rassini.auth.login.usernameLabel', 'Usuario');
+    }
+
+    get displayUsernamePlaceholder(): string {
+        return this.usernamePlaceholder ?? this.t('rassini.auth.login.usernamePlaceholder', 'Usuario');
+    }
+
+    get displayPasswordLabel(): string {
+        return this.passwordLabel ?? this.t('rassini.auth.login.passwordLabel', 'Contraseña');
+    }
+
+    get displayPasswordPlaceholder(): string {
+        return this.passwordPlaceholder ?? this.t('rassini.auth.login.passwordPlaceholder', 'Contraseña');
+    }
+
+    get displayLoginButtonText(): string {
+        return this.loginButtonText ?? this.t('rassini.auth.login.loginButton', 'Iniciar Sesión');
+    }
+
+    get displayLoadingText(): string {
+        return this.loadingText ?? this.t('rassini.auth.login.signingIn', 'Iniciando sesión...');
     }
 
     ngOnDestroy(): void {
@@ -174,15 +214,15 @@ export class RassiniLogin {
             error: (err) => {
                 console.log('LOGIN ERROR', err);
                 if (err.status === 401) {
-                    this.errorMessage = 'Usuario o contraseña incorrectos.';
+                    this.errorMessage = this.t('rassini.auth.login.invalidCredentials', 'Usuario o contraseña incorrectos.');
                 } else if (err.status === 403) {
-                    this.errorMessage = 'Tu usuario se encuentra deshabilitado. Contacta a un administrador.';
+                    this.errorMessage = this.t('rassini.auth.login.userDisabled', 'Tu usuario se encuentra deshabilitado. Contacta a un administrador.');
                 } else if (err.status === 500) {
-                    this.errorMessage = 'Ocurrió un error interno del sistema. Intenta nuevamente.';
+                    this.errorMessage = this.t('rassini.auth.login.internalError', 'Ocurrió un error interno del sistema. Intenta nuevamente.');
                 } else if (err.status === 0) {
-                    this.errorMessage = 'No fue posible conectar con el servicio. Intenta nuevamente.';
+                    this.errorMessage = this.t('rassini.auth.login.connectionError', 'No fue posible conectar con el servicio. Intenta nuevamente.');
                 } else {
-                    this.errorMessage = 'Usuario o contraseña incorrectos.';
+                    this.errorMessage = this.t('rassini.auth.login.invalidCredentials', 'Usuario o contraseña incorrectos.');
                 }
                 this.cdr.detectChanges();
             }
@@ -192,7 +232,7 @@ export class RassiniLogin {
 
     onVerifyMfa(): void {
         if (this.countdown <= 0) {
-            this.resetMfaState('La sesión de configuración MFA expiró. Inicia sesión nuevamente.');
+            this.resetMfaState(this.t('rassini.auth.login.mfaSessionExpired', 'La sesión de configuración MFA expiró. Inicia sesión nuevamente.'));
             return;
         }
 
@@ -211,20 +251,20 @@ export class RassiniLogin {
             },
             error: (err) => {
                 if (err.status === 401 && err.error?.code) {
-                    this.resetMfaState(err.error.message || 'La sesión de verificación expiró. Inicia sesión nuevamente.');
+                    this.resetMfaState(err.error.message || this.t('rassini.auth.login.mfaVerifyExpired', 'La sesión de verificación expiró. Inicia sesión nuevamente.'));
                 } else if (err.status === 401) {
-                    this.resetMfaState('La sesión de verificación expiró. Inicia sesión nuevamente.');
+                    this.resetMfaState(this.t('rassini.auth.login.mfaVerifyExpired', 'La sesión de verificación expiró. Inicia sesión nuevamente.'));
                 } else if (err.status === 400 || err.status === 403) {
-                    this.errorMessage = err.error?.message || 'Código incorrecto o token expirado.';
+                    this.errorMessage = err.error?.message || this.t('rassini.auth.login.mfaInvalidCode', 'Código incorrecto o token expirado.');
                     if (this.errorMessage.toLowerCase().includes('límite') || this.errorMessage.toLowerCase().includes('utilizado')) {
                         this.resetMfaState(this.errorMessage);
                     }
                 } else if (err.status === 429) {
-                     this.resetMfaState(err.error?.message || 'Demasiados intentos fallidos.');
+                     this.resetMfaState(err.error?.message || this.t('rassini.auth.login.tooManyAttempts', 'Demasiados intentos fallidos.'));
                 } else if (err.status === 500) {
-                     this.resetMfaState('Ocurrió un error interno del servidor. Inicia sesión nuevamente.');
+                     this.resetMfaState(this.t('rassini.auth.login.internalError', 'Ocurrió un error interno del servidor. Inicia sesión nuevamente.'));
                 } else {
-                    this.errorMessage = 'Ocurrió un error al verificar el código.';
+                    this.errorMessage = this.t('rassini.auth.login.mfaInvalidCode', 'Ocurrió un error al verificar el código.');
                 }
                 this.cdr.detectChanges();
             }
