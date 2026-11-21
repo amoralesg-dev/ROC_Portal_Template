@@ -1,5 +1,6 @@
 ﻿import '@angular/compiler';
 import { describe, it, expect } from 'vitest';
+import { Injector, runInInjectionContext } from '@angular/core';
 import { provideRassiniAuth, AUTH_CONFIG } from '../../providers/auth.provider';
 import { Auth } from '../../services/auth';
 import { authGuard } from '../../guards/auth-guard';
@@ -8,6 +9,11 @@ import { authInterceptor } from '../../interceptors/auth.interceptor';
 import { RassiniSidebar } from '../../layout/components/sidebar/rassini-sidebar';
 import { RassiniTopbar } from '../../layout/components/topbar/rassini-topbar';
 import { RassiniShell } from '../../layout/components/shell/rassini-shell';
+
+function createSidebar(): RassiniSidebar {
+  const injector = Injector.create({ providers: [] });
+  return runInInjectionContext(injector, () => new RassiniSidebar());
+}
 
 describe('Legacy Compatibility Verification (Phase 1)', () => {
   it('1. Todos los simbolos legacy estan disponibles y conservan sus nombres y tipos', () => {
@@ -23,7 +29,7 @@ describe('Legacy Compatibility Verification (Phase 1)', () => {
   });
 
   it('2. rui-sidebar conserva Inputs originales y funcionalidad con menus pasados por @Input', () => {
-    const sidebar = new RassiniSidebar();
+    const sidebar = createSidebar();
     expect(sidebar.menu).toEqual([]);
     expect(sidebar.visible).toBe(true);
     expect(sidebar.itemClick).toBeDefined();
