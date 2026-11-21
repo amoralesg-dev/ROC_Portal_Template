@@ -48,6 +48,8 @@ export interface CorporateNavigationMenu {
   targetType?: 'INTERNO' | 'EXTERNO';
   externalUrl?: string | null;
   resolvedUrl?: string | null;
+  applicationId?: number | null;
+  applicationCode?: string | null;
   openInNewTab?: boolean;
   children?: CorporateNavigationMenu[];
 }

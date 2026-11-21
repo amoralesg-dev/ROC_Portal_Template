@@ -4,6 +4,8 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { RassiniMenuItem } from '../../models';
 import { RassiniI18nService } from '../../../i18n';
+import { AuthenticationService } from '../../../corporate/services/authentication.service';
+import { NavigationService } from '../../../corporate/services/navigation.service';
 
 @Component({
     selector: 'rui-sidebar',
@@ -184,6 +186,8 @@ export class RassiniSidebar {
 
     private readonly router: Router | null = null;
     readonly i18n = inject(RassiniI18nService, { optional: true });
+    private readonly corporateAuth = inject(AuthenticationService, { optional: true });
+    private readonly navigationService = inject(NavigationService, { optional: true });
 
     constructor() {
         try {
@@ -382,10 +386,62 @@ export class RassiniSidebar {
      * 4. Si targetType no es EXTERNO.
      * 5. Si externalUrl o url pertenece a la misma SPA actual (mismo origen y mismo baseHref).
      */
+    resolveItemApplicationCode(item?: RassiniMenuItem | null): string | undefined {
+        if (!item) return undefined;
+        const directCode = item.applicationCode;
+        if (directCode && directCode.trim() !== '') {
+            return directCode;
+        }
+        if (!item.code || !this.navigationService) {
+            return undefined;
+        }
+        const flatMenus = this.navigationService.getFlatMenus();
+        if (!flatMenus || flatMenus.length === 0) {
+            return undefined;
+        }
+        const itemRoute = Array.isArray(item.routerLink)
+            ? item.routerLink.join('/')
+            : (typeof item.routerLink === 'string' ? item.routerLink : undefined);
+
+        let candidates = flatMenus.filter(m => m.code === item.code);
+        if (candidates.length > 1 && item.resolvedUrl) {
+            const byResolved = candidates.filter(m => m.resolvedUrl === item.resolvedUrl);
+            if (byResolved.length > 0) candidates = byResolved;
+        }
+        if (candidates.length > 1 && itemRoute) {
+            const byRoute = candidates.filter(m => m.route === itemRoute);
+            if (byRoute.length > 0) candidates = byRoute;
+        }
+        const appCodes = Array.from(new Set(
+            candidates
+                .map(m => m.applicationCode)
+                .filter((c): c is string => !!c && c.trim() !== '')
+        ));
+        if (appCodes.length === 1) {
+            const matched = candidates[0];
+            const routeMatches = !itemRoute || !matched.route || matched.route === itemRoute;
+            const resolvedMatches = !item.resolvedUrl || !matched.resolvedUrl || matched.resolvedUrl === item.resolvedUrl;
+            if (routeMatches && resolvedMatches) {
+                return appCodes[0];
+            }
+        }
+        return undefined;
+    }
+
     isInternalNavigation(item?: RassiniMenuItem | null): boolean {
         if (!item) return false;
         if (this.hasChildren(item)) {
             return false;
+        }
+        const itemAppCode = this.resolveItemApplicationCode(item);
+        const currentAppCode = this.corporateAuth?.getConfig()?.applicationCode;
+        if (itemAppCode && currentAppCode) {
+            if (itemAppCode === currentAppCode && item.routerLink) {
+                return true;
+            }
+            if (itemAppCode !== currentAppCode && (item.resolvedUrl || item.externalUrl)) {
+                return false;
+            }
         }
         if (item.routerLink) {
             return true;
