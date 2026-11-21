@@ -15,6 +15,12 @@ class MockTokenStorageAdapter implements TokenStorageAdapter {
   setAccessToken(token: string): void {
     this.store.set('access_token', token);
   }
+  getRefreshToken(): string | null {
+    return this.store.get('refresh_token') || null;
+  }
+  setRefreshToken(token: string): void {
+    this.store.set('refresh_token', token);
+  }
   getIdToken(): string | null {
     return this.store.get('id_token') || null;
   }
@@ -24,10 +30,15 @@ class MockTokenStorageAdapter implements TokenStorageAdapter {
   getTokens(): CorporateTokens | null {
     const at = this.getAccessToken();
     if (!at) return null;
-    return { accessToken: at, idToken: this.getIdToken() || undefined };
+    return {
+      accessToken: at,
+      refreshToken: this.getRefreshToken() || undefined,
+      idToken: this.getIdToken() || undefined
+    };
   }
   setTokens(tokens: CorporateTokens): void {
     if (tokens.accessToken) this.setAccessToken(tokens.accessToken);
+    if (tokens.refreshToken) this.setRefreshToken(tokens.refreshToken);
     if (tokens.idToken) this.setIdToken(tokens.idToken);
   }
   clear(): void {

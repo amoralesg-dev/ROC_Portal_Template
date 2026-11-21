@@ -24,6 +24,8 @@ export interface RassiniMenuItem {
 
     code?: string;
 
+    applicationCode?: string | null;
+
     url?: string;
 
     target?: string;

@@ -1,6 +1,6 @@
 import { Injectable, Inject, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Observable, tap, catchError, throwError, of, finalize, shareReplay } from 'rxjs';
 import { AuthConfiguration } from '../models/auth-config.model';
 import { AUTH_CONFIG } from '../providers/auth.provider';
 import { AuthUser, AuthMenu, AuthBusinessUnit } from '../models/auth.model';
@@ -18,6 +18,9 @@ export class Auth {
     readonly menus               = signal<AuthMenu[]>([]);
     readonly businessUnits       = signal<AuthBusinessUnit[]>([]);
     readonly hasAllBusinessUnits = signal<boolean>(false);
+    readonly sessionRestored     = signal<boolean>(false);
+
+    private restoreSession$: Observable<unknown> | null = null;
 
     constructor(@Inject(AUTH_CONFIG) private readonly config: AuthConfiguration) {
         // Initialization moved to APP_INITIALIZER
@@ -135,23 +138,26 @@ export class Auth {
     }
 
     restoreSession(): Observable<unknown> {
-        console.log('RESTORE SESSION CALLED');
-        console.log('CALLING /auth/me');
-        return this.getCurrentUser().pipe(
+        if (this.sessionRestored()) {
+            return of(null);
+        }
+        if (this.restoreSession$) {
+            return this.restoreSession$;
+        }
+        this.restoreSession$ = this.getCurrentUser().pipe(
             tap(() => {
-                console.log('ME RESPONSE applied');
-                console.log('currentUser =>',         this.currentUser());
-                console.log('roles =>',               this.roles());
-                console.log('permissions =>',         this.permissions());
-                console.log('menus =>',               this.menus());
-                console.log('businessUnits =>',       this.businessUnits());
-                console.log('hasAllBusinessUnits =>', this.hasAllBusinessUnits());
+                this.sessionRestored.set(true);
             }),
             catchError(err => {
-                console.error('Error restoring session from /auth/me', err);
+                this.sessionRestored.set(true);
                 return throwError(() => err);
-            })
+            }),
+            finalize(() => {
+                this.restoreSession$ = null;
+            }),
+            shareReplay(1)
         );
+        return this.restoreSession$;
     }
 
     // ── Privado ──────────────────────────────────────────────────────────────
