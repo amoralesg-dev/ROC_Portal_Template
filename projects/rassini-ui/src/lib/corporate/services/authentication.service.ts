@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, Optional, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, finalize, shareReplay } from 'rxjs/operators';
 import { 
   CorporateTokens, 
   CorporateUser, 
@@ -86,7 +86,12 @@ export class AuthenticationService {
     return this.storageAdapter.getIdToken();
   }
 
+  private inFlightRefresh$: Observable<CorporateTokens> | null = null;
+
   refreshToken(): Observable<CorporateTokens> {
+    if (this.inFlightRefresh$) {
+      return this.inFlightRefresh$;
+    }
     if (!this.config) return throwError(() => new Error('Corporate OIDC config is not set'));
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) return throwError(() => new Error('No refresh token available'));
@@ -97,7 +102,7 @@ export class AuthenticationService {
       .set('client_id', this.config.clientId)
       .set('refresh_token', refreshToken);
 
-    return this.http.post<any>(tokenUrl, body.toString(), {
+    this.inFlightRefresh$ = this.http.post<any>(tokenUrl, body.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).pipe(
       map(res => {
@@ -113,10 +118,16 @@ export class AuthenticationService {
         return tokens;
       }),
       catchError(err => {
-        this.logout();
+        this.logout(false);
         return throwError(() => err);
-      })
+      }),
+      finalize(() => {
+        this.inFlightRefresh$ = null;
+      }),
+      shareReplay(1)
     );
+
+    return this.inFlightRefresh$;
   }
 
   decodeToken(token: string): JwtClaimsPayload | null {
