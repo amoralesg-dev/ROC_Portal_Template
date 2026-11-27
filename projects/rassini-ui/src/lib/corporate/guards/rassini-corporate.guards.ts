@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthenticationService } from '../services/authentication.service';
 
 export const rassiniAuthGuard: CanActivateFn = async (route, state) => {
@@ -15,6 +16,16 @@ export const rassiniAuthGuard: CanActivateFn = async (route, state) => {
       authService.restoreSession();
     }
     return true;
+  }
+
+  // Si el access token venció pero existe refresh token, intentar renovación silenciosa (single-flight)
+  if (authService.getRefreshToken()) {
+    try {
+      await firstValueFrom(authService.refreshToken());
+      return true;
+    } catch {
+      await authService.logout(false);
+    }
   }
 
   try {

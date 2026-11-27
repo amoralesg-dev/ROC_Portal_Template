@@ -95,10 +95,14 @@ export const rassiniTokenInterceptor: HttpInterceptorFn = (req: HttpRequest<unkn
         }
 
         if (error.status === 401) {
+          const alreadyRetried = req.headers.has('X-Rassini-Auth-Retry');
           const refreshToken = authService.getRefreshToken();
-          if (!refreshToken) {
-            authService.logout();
-            router.navigate(['/auth/login']);
+          if (alreadyRetried || !refreshToken) {
+            void authService.logout(false).then(() => authService.buildAuthorizationUrl()).then((authUrl) => {
+              if (authUrl && typeof window !== 'undefined' && window.location) {
+                window.location.href = authUrl;
+              }
+            }).catch(() => { /* ignore */ });
             return throwError(() => error);
           }
 
@@ -110,12 +114,18 @@ export const rassiniTokenInterceptor: HttpInterceptorFn = (req: HttpRequest<unkn
               switchMap((tokens) => {
                 isRefreshing = false;
                 refreshTokenSubject.next(tokens.accessToken);
-                return next(addTokenHeader(req, tokens.accessToken));
+                const retryReq = addTokenHeader(req, tokens.accessToken).clone({
+                  headers: addTokenHeader(req, tokens.accessToken).headers.set('X-Rassini-Auth-Retry', '1')
+                });
+                return next(retryReq);
               }),
               catchError((refreshErr) => {
                 isRefreshing = false;
-                authService.logout();
-                router.navigate(['/auth/login']);
+                void authService.logout(false).then(() => authService.buildAuthorizationUrl()).then((authUrl) => {
+                  if (authUrl && typeof window !== 'undefined' && window.location) {
+                    window.location.href = authUrl;
+                  }
+                }).catch(() => { /* ignore */ });
                 return throwError(() => refreshErr);
               })
             );
@@ -124,7 +134,12 @@ export const rassiniTokenInterceptor: HttpInterceptorFn = (req: HttpRequest<unkn
             return refreshTokenSubject.pipe(
               filter(newToken => newToken !== null),
               take(1),
-              switchMap(newToken => next(addTokenHeader(req, newToken!)))
+              switchMap(newToken => {
+                const retryReq = addTokenHeader(req, newToken!).clone({
+                  headers: addTokenHeader(req, newToken!).headers.set('X-Rassini-Auth-Retry', '1')
+                });
+                return next(retryReq);
+              })
             );
           }
         }
