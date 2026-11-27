@@ -68,8 +68,9 @@ describe('Corporate SDK - Session Logout Coordination (Full Multi-User Isolation
     expect(contextService.resolvePlaceholders('${USERNAME}')).toBe('usuario_a');
     expect(navService.menus().length).toBe(1);
 
-    // 2. Usuario A ejecuta logout coordinado
-    bootstrapService.logout();
+    // 2. Usuario A ejecuta logout coordinado y sincronizacion de estado en SessionBootstrapService (pageshow / bfcache)
+    authService.logout(false);
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
 
     // Verificaciones de limpieza total
     expect(authService.currentUser()).toBeNull();

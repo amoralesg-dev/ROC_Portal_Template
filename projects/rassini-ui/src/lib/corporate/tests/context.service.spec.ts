@@ -11,6 +11,8 @@ class MockTokenStorageAdapter implements TokenStorageAdapter {
   private store = new Map<string, string>();
   getAccessToken(): string | null { return this.store.get('access_token') || null; }
   setAccessToken(token: string): void { this.store.set('access_token', token); }
+  getRefreshToken(): string | null { return this.store.get('refresh_token') || null; }
+  setRefreshToken(token: string): void { this.store.set('refresh_token', token); }
   getIdToken(): string | null { return null; }
   setIdToken(token: string): void {}
   getTokens(): any { return null; }
